@@ -13,7 +13,7 @@ At the start of a game:
 - Players should only be able to see how much money they have (and not the other player)
 ## Rounds ##
 - The player can choose to:
-  - [Sell cards](selling-cards)
+  - [Sell cards](#selling-cards)
   - Buy a card
   - Add a card to the shop
 ### Selling cards ###
