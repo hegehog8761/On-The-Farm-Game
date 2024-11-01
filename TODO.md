@@ -1,0 +1,1 @@
+- Remove leaderboard (and assets folder)
