@@ -1,6 +1,7 @@
 # Instructions #
 ## Setup ##
 All of this should be handled by the code
+
 At the start of a game:
 - There should be 50 cards in the deck
 - Draw 5 cards for player 1
