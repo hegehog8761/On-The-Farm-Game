@@ -456,9 +456,23 @@ namespace Game_Project
                             purpleCards.Add(card); break;
                     }
                 }
-                
+
                 // Add actual algorithms for selling scores, need to prioritise selling cards when the deck is down to 5-10 cards
                 // Maybe even reduce bias towards buying cards towards the end of the game and just add cards if sell out too soon
+
+                foreach (List<Card> colourList in new List<List<Card>>() {redCards, greenCards, yellowCards, purpleCards})
+                {
+                    if (colourList.Count > 0)
+                    {
+                        int colourScore = 5 * (colourList.Count - 1) < 0 ? 0 : 5 * (colourList.Count - 1);
+                        int colourIs = new int[colourList.Count];
+                        for (int i = 0; i < colourList.Count; i++)
+                        {
+                            colourIs[i] = currentGame.plr2Cards.IndexOf(colourList[i]);
+                        }
+                        possibleGames.Add(new object[] { { "Sell Cards", colourIs}, colourScore });
+                    }
+                }
             }
         }
 
