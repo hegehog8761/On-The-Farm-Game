@@ -193,12 +193,30 @@ namespace Game_Project
                 // -> If it's only one clicked and it's unclicked then allow user to select any box
 
                 #endregion
+                throw new NotImplementedException();
             }
 
             public void PlayBuy(int cardI)
             {
-                // Only ever called by the AI's desision
-                throw new NotImplementedException();
+                // Assume that since it's the AI it shouln't have chosen a card it doens't have enough money for
+                Card purchasedCard = deck[cardI];
+                deck.RemoveAt(cardI);
+                FillShop();
+                plr1Score -= purchasedCard.score;
+                plr2Cards.Add(purchasedCard);
+                // Only the AI should ever run this function overflow
+                PlayerTurn();
+            }
+
+            public void PlaySell(int[] cardIs)
+            {
+                foreach (int cardI in cardIs)
+                {
+                    plr2Score += plr2Cards[cardI].score;
+                    plr2Cards.RemoveAt(cardI);
+                }
+                // Only the AI should ever call this overflow
+                PlayerTurn();
             }
         }
 
@@ -433,7 +451,7 @@ namespace Game_Project
 
                     int avg = cBuyScore / qnty;
 
-                    cGame = new object[] { new object[] { "Buy", i }, avg };
+                    cGame = new object[] { new object[] { "Buy Card", i }, avg };
                     possibleGames.Add(cGame);
                 }
 
@@ -491,7 +509,13 @@ namespace Game_Project
                         }
                     }
                 }
-                return possibleGames[0];
+                if (possibleGames[0][0] == "Add Card")
+                {
+                    return new object[] { "Add Card" };
+                } else
+                {
+                    return possibleGames[0][0];
+                }
             }
         }
 
@@ -788,11 +812,29 @@ namespace Game_Project
             form.Controls.Add(gameSell);
             form.Controls.Add(gameAdd);
             #endregion
+
+            throw new NotImplementedException();
         }
 
         public static void AITurn()
         {
-            throw new NotImplementedException();
+            AI mainAI = new AI();
+            object[] decision = AI.Run();
+            if (decision.Length == 1 && decision[0] == "Add Card")
+            {
+
+            } 
+            else if (decision[0] == "Buy Card")
+            {
+                currentGame.PlayBuy(decision[1]);
+            } 
+            else if (decision[0] == "Sell Cards")
+            {
+                currentGame.PlaySell((int[])decision[0][1]);
+            }
+            else {
+                throw new NotImplementedException();
+            }
         }
 
         public static void SaveToFile(object sender, EventArgs e)
