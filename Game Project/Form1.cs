@@ -18,6 +18,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Data.SqlClient;
 using static Game_Project.Form1;
 using System.Deployment.Application;
+using System.Dynamic;
 
 namespace Game_Project
 {
@@ -473,6 +474,24 @@ namespace Game_Project
                         possibleGames.Add(new object[] { { "Sell Cards", colourIs}, colourScore });
                     }
                 }
+
+                // Sort the options best to worse 
+                bool changed = true;
+                while (changed)
+                {
+                    changed = false;
+                    for (int i = 0; i < possibleGames.Count-1; i++)
+                    {
+                        if (possibleGames[i][1] < possibleGames[i+1][1])
+                        {
+                            changed = true;
+                            object[] oldVal = possibleGames[i];
+                            possibleGames[i] = possibleGames[i+1];
+                            possibleGames[i+1] = oldVal;
+                        }
+                    }
+                }
+                return possibleGames[0];
             }
         }
 
