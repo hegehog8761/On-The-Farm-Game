@@ -30,6 +30,8 @@ namespace Game_Project
         static Game currentGame;
         static GameUI gameUI;
 
+        // Debugging function =
+
 
         // Classes are sorted by alphabetical order.
 
