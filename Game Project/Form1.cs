@@ -204,6 +204,7 @@ namespace Game_Project
                 FillShop();
                 plr1Score -= purchasedCard.score;
                 plr2Cards.Add(purchasedCard);
+                gameUI.Draw();
                 // Only the AI should ever run this function overflow
                 PlayerTurn();
             }
@@ -215,6 +216,7 @@ namespace Game_Project
                     plr2Score += plr2Cards[cardI].score;
                     plr2Cards.RemoveAt(cardI);
                 }
+                gameUI.Draw();
                 // Only the AI should ever call this overflow
                 PlayerTurn();
             }
@@ -822,7 +824,7 @@ namespace Game_Project
             object[] decision = AI.Run();
             if (decision.Length == 1 && decision[0] == "Add Card")
             {
-
+                currentGame.PlayAdd();
             } 
             else if (decision[0] == "Buy Card")
             {
@@ -833,7 +835,7 @@ namespace Game_Project
                 currentGame.PlaySell((int[])decision[0][1]);
             }
             else {
-                throw new NotImplementedException();
+                throw new ArgumentOutOfRangeException();
             }
         }
 
