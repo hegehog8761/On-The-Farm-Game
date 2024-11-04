@@ -16,6 +16,8 @@ using System.Runtime.CompilerServices;
 using System.Diagnostics;
 using System.Runtime.InteropServices.ComTypes;
 using System.Data.SqlClient;
+using static Game_Project.Form1;
+using System.Deployment.Application;
 
 namespace Game_Project
 {
@@ -368,6 +370,95 @@ namespace Game_Project
 
                     gameOpponentCardsList.Controls.Add(label);
                 }
+            }
+        }
+
+        public class AI
+        {
+            public object[] Run() // Returns {"decision", cardI}
+            {
+                List<object[]> possibleGames = new List<object[]>(); // {move, score}
+
+                // Add a card to the deck
+                object[] cGame = new object[2];
+                cGame[0] = "Add Card";
+                int addScore = 0;
+                int playerCards = 0; // Number of cards of same colour as top of deck that opponent has
+                foreach (Card card in currentGame.plr1Cards)
+                {
+                    if (card.colour == currentGame.deck[0].colour)
+                    {
+                        playerCards++;
+                    }
+                }
+                addScore -= 5 * (playerCards - 1) < 0 ? 0 : 5 * (playerCards - 1); // Remove some points based on how much it would benefit the player to have the card on the top of the deck
+
+                int AICards = 0; // Number of cards of same colour as top of deck that AI has
+                foreach (Card card in currentGame.plr2Cards)
+                {
+                    if (card.colour == currentGame.deck[0].colour)
+                    {
+                        AICards++;
+                    }
+                }
+                addScore += 5 * (AICards - 1) < 0 ? 0 : 5 * (AICards - 1); // Add some points based off of how much it would benefit the AI to have the card on top of the deck
+
+                cGame[1] = addScore; // Current game's score 
+                possibleGames.Add(cGame);
+
+                // Buying a card
+
+                for (int i = 0; i < currentGame.table.Count)
+                {
+                    Card card = currentGame.table[i];
+                    if (currentGame.plr2Score < card.score)
+                    {
+                        continue; // AI doesn't have enough money to buy it so don't add it as an option
+                    }
+                    int qnty = 2;
+                    int cBuyScore = 0;
+                    if (currentGame.table.Count == 5) // Only if a card will be added back to the table on purchase of a card
+                    {
+                        cBuyScore -= 5 * (playerCards - 1) < 0 ? 0 : 5 * (playerCards - 1); // Remove some points based on what it would add to the shop for the other player
+
+                        cBuyScore += 5 * (AICards - 1) < 0 ? 0 : 5 * (AICards - 1); // Add point based on what it would add to the shop for the AI
+
+                        qnty++;
+                    }
+
+                    cBuyScore += 5 * (AICards - 1) < 0 ? 0 : 5 * (AICards - 1); // Add points based on how much it would benefit AI to have the card
+
+                    cBuyScore += 5 * (playerCards - 1) < 0 ? 0 : 5 * (playerCards - 1); // Add points based on how much it would hinder the opponent for not having it
+
+                    int avg = cBuyScore / qnty;
+
+                    cGame = new object[] { new object[] { "Buy", i }, avg };
+                    possibleGames.Add(cGame);
+                }
+
+                // Selling cards
+                List<Card> redCards = new List<Card>();
+                List<Card> greenCards = new List<Card>();
+                List<Card> yellowCards = new List<Card>();
+                List<Card> purpleCards = new List<Card>();
+
+                foreach (Card card in currentGame.plr2Cards)
+                {
+                    switch (card.colour)
+                    {
+                        case "Red":
+                            redCards.Add(card); break;
+                        case "Green":
+                            greenCards.Add(card); break;
+                        case "Yellow":
+                            yellowCards.Add(card); break;
+                        case "Purple":
+                            purpleCards.Add(card); break;
+                    }
+                }
+                
+                // Add actual algorithms for selling scores, need to prioritise selling cards when the deck is down to 5-10 cards
+                // Maybe even reduce bias towards buying cards towards the end of the game and just add cards if sell out too soon
             }
         }
 

@@ -110,7 +110,7 @@ namespace Game_Project
 
                     cBuyScore += 5 * (AICards - 1) < 0 ? 0 : 5 * (AICards - 1); // Add point based on what it would add to the shop for the AI
 
-                    qnty += 2;
+                    qnty++;
                 }
 
                 cBuyScore += 5 * (AICards - 1) < 0 ? 0 : 5 * (AICards - 1); // Add points based on how much it would benefit AI to have the card
