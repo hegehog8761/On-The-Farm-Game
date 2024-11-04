@@ -1,1 +1,2 @@
 - Remove leaderboard (and assets folder)
+- Possible soft lock: Player chooses to buy a card but player can't afford any of them. Solution: Add a back button to the buy and sell screens
