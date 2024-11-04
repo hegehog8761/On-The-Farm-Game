@@ -207,7 +207,7 @@ namespace Game_Project
                     cButton.Text = $"{card.type}\n£{card.score}";
                     cButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                     cButton.BackColor = TextToColour(card.colour);
-                    cButton.Enabled = card.value <= currentGame.plr1Score; // Enable the button if player has enough money to purchase it
+                    cButton.Enabled = card.score <= currentGame.plr1Score; // Enable the button if player has enough money to purchase it
                     cButton.Click += BuyHandler;
 
                     gameUI.gameTableList.Controls.Add(cButton);
@@ -456,7 +456,7 @@ namespace Game_Project
 
                 // Buying a card
 
-                for (int i = 0; i < currentGame.table.Count)
+                for (int i = 0; i < currentGame.table.Count; i++)
                 {
                     Card card = currentGame.table[i];
                     if (currentGame.plr2Score < card.score)
@@ -513,12 +513,12 @@ namespace Game_Project
                     if (colourList.Count > 0)
                     {
                         int colourScore = 5 * (colourList.Count - 1) < 0 ? 0 : 5 * (colourList.Count - 1);
-                        int colourIs = new int[colourList.Count];
+                        int[] colourIs = new int[colourList.Count];
                         for (int i = 0; i < colourList.Count; i++)
                         {
                             colourIs[i] = currentGame.plr2Cards.IndexOf(colourList[i]);
                         }
-                        possibleGames.Add(new object[] { { "Sell Cards", colourIs}, colourScore });
+                        possibleGames.Add(new object[] {new object[] { "Sell Cards", colourIs}, colourScore });
                     }
                 }
 
@@ -529,7 +529,7 @@ namespace Game_Project
                     changed = false;
                     for (int i = 0; i < possibleGames.Count-1; i++)
                     {
-                        if (possibleGames[i][1] < possibleGames[i+1][1])
+                        if ((int)possibleGames[i][1] < (int)possibleGames[i+1][1])
                         {
                             changed = true;
                             object[] oldVal = possibleGames[i];
@@ -543,7 +543,7 @@ namespace Game_Project
                     return new object[] { "Add Card" };
                 } else
                 {
-                    return possibleGames[0][0];
+                    return (object[])possibleGames[0][0];
                 }
             }
         }
@@ -814,6 +814,12 @@ namespace Game_Project
             PlayerTurn();
         }
 
+
+        public static void PlayerTurn(object sender, EventArgs e)
+        {
+            PlayerTurn();
+        }
+
         public static void PlayerTurn()
         {
             gameUI.Draw();
@@ -843,24 +849,24 @@ namespace Game_Project
             form.Controls.Add(gameAdd);
             #endregion
 
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public static void AITurn()
         {
             AI mainAI = new AI();
-            object[] decision = AI.Run();
+            object[] decision = mainAI.Run();
             if (decision.Length == 1 && decision[0] == "Add Card")
             {
                 currentGame.PlayAdd();
             } 
             else if (decision[0] == "Buy Card")
             {
-                currentGame.PlayBuy(decision[1]);
+                currentGame.PlayBuy((int)decision[1]);
             } 
             else if (decision[0] == "Sell Cards")
             {
-                currentGame.PlaySell((int[])decision[0][1]);
+                currentGame.PlaySell((int[])decision[1]);
             }
             else {
                 throw new ArgumentOutOfRangeException();
