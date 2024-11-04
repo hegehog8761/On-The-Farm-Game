@@ -176,6 +176,11 @@ namespace Game_Project
                 table.Add(deck[0]);
                 deck.RemoveAt(0);
             }
+            
+            public void BuyHandler(object sender, EventArgs e)
+            {
+
+            }
 
             public void PlayBuy(object sender, EventArgs e)
             {
@@ -183,8 +188,30 @@ namespace Game_Project
                 #region Change UI to allow user to select card to buy
 
                 gameUI.Draw(); // Clear the screen to return it to the natural state
-                // Convert all cards on table to buttons
 
+                // Add the back button
+                Button playBuyBack = new Button();
+                playBuyBack.Text = "Back";
+                playBuyBack.Location = new Point(238, 119);
+                playBuyBack.Size = new Size(75, 23);
+                playBuyBack.Click += PlayerTurn;
+
+                form.Controls.Add(playBuyBack);
+
+                // Convert all cards on table to buttons
+                gameUI.gameTableList.Controls.Clear(); // Remove cards as labels from the table
+                
+                foreach (Card card in currentGame.table)
+                {
+                    Button cButton = new Button();
+                    cButton.Text = $"{card.type}\n£{card.score}";
+                    cButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+                    cButton.BackColor = TextToColour(card.colour);
+                    cButton.Enabled = card.value <= currentGame.plr1Score; // Enable the button if player has enough money to purchase it
+                    cButton.Click += BuyHandler;
+
+                    gameUI.gameTableList.Controls.Add(cButton);
+                }
 
                 //// THIS IS ALL FOR THE SELLING FUNCTION, NOT BUYING
                 // Draw sell button back on 
@@ -224,17 +251,17 @@ namespace Game_Project
 
         public class GameUI
         {
-            Label gameTitle;
-            Label gamePlayerMoney;
-            Label gamePlayerCardsLabel;
-            FlowLayoutPanel gamePlayerCards;
-            Label gameDeckLabel;
-            Label gameDeckCard;
-            Label gameTableLabel;
-            FlowLayoutPanel gameTableList;
-            Button gameSaveGame;
-            Label gameOpponentCardsLabel;
-            FlowLayoutPanel gameOpponentCardsList;
+            public Label gameTitle;
+            public Label gamePlayerMoney;
+            public Label gamePlayerCardsLabel;
+            public FlowLayoutPanel gamePlayerCards;
+            public Label gameDeckLabel;
+            public Label gameDeckCard;
+            public Label gameTableLabel;
+            public FlowLayoutPanel gameTableList;
+            public Button gameSaveGame;
+            public Label gameOpponentCardsLabel;
+            public FlowLayoutPanel gameOpponentCardsList;
 
             public GameUI()
             {
@@ -789,6 +816,7 @@ namespace Game_Project
 
         public static void PlayerTurn()
         {
+            gameUI.Draw();
             #region Option Buttons
 
             Button gameBuy = new Button();
