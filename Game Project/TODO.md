@@ -1,0 +1,4 @@
+- Sell card function
+- Buy cards funtion
+- AI
+- 

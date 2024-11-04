@@ -25,6 +25,7 @@ namespace Game_Project
         static Random rand = new Random();
         static Form form;
         static Game currentGame;
+        static GameUI gameUI;
 
 
         // Classes are sorted by alphabetical order.
@@ -74,6 +75,7 @@ namespace Game_Project
 
         public class Game // Holds all of the data on the current game
         {
+            #region Variables
             public List<Card> plr1Cards;
             public List<Card> plr2Cards;
 
@@ -82,6 +84,7 @@ namespace Game_Project
 
             public List<Card> deck;
             public List<Card> table;
+            #endregion
 
             public Game()
             {
@@ -102,11 +105,11 @@ namespace Game_Project
                 // Give each player 5 cards
                 for (int i = 0; i < 5; i++)
                 {
-                    DrawCard(1);
+                    DrawCardDeck(1);
                 }
                 for (int i = 0; i < 5; i++)
                 {
-                    DrawCard(2);
+                    DrawCardDeck(2);
                 }
 
                 // Add 5 cards to the shop
@@ -125,7 +128,7 @@ namespace Game_Project
                 table = t;
             }
 
-            public void DrawCard(int plr)
+            public void DrawCardDeck(int plr)
             {
                 switch (plr)
                 {
@@ -145,6 +148,225 @@ namespace Game_Project
                 {
                     table.Add(deck[0]);
                     deck.RemoveAt(0);
+                }
+            }
+
+            public void PlayAdd(object sender, EventArgs e)
+            {
+                // Called only by the player's button press
+                Add();
+                gameUI.Draw();
+                AITurn();
+            }
+
+            public void PlayAdd()
+            {
+                // Called only by the AI's desision
+                Add();
+                gameUI.Draw();
+                PlayerTurn();
+            }
+
+            public void Add()
+            {
+                // Sub function to actually add a card to the table
+                table.Add(deck[0]);
+                deck.RemoveAt(0);
+            }
+
+            public void PlayBuy(object sender, EventArgs e)
+            {
+                // Only ever called by player's button press
+                #region Change UI to allow user to select card to buy
+
+                gameUI.Draw(); // Clear the screen to return it to the natural state
+                // Convert all cards on table to buttons
+
+
+                //// THIS IS ALL FOR THE SELLING FUNCTION, NOT BUYING
+                // Draw sell button back on 
+                // Change all buttons to selectable box
+                // On click of check box if it's the only one, in that case disable all rest of non-same colour
+                // -> If it's only one clicked and it's unclicked then allow user to select any box
+
+                #endregion
+            }
+
+            public void PlayBuy(int cardI)
+            {
+                // Only ever called by the AI's desision
+                throw new NotImplementedException();
+            }
+        }
+
+        public class GameUI
+        {
+            Label gameTitle;
+            Label gamePlayerMoney;
+            Label gamePlayerCardsLabel;
+            FlowLayoutPanel gamePlayerCards;
+            Label gameDeckLabel;
+            Label gameDeckCard;
+            Label gameTableLabel;
+            FlowLayoutPanel gameTableList;
+            Button gameSaveGame;
+            Label gameOpponentCardsLabel;
+            FlowLayoutPanel gameOpponentCardsList;
+
+            public GameUI()
+            {
+                Font labelFont = new Font("Lucida Handwriting", (float)9);
+
+                // Title
+                gameTitle = new Label();
+                gameTitle.Font = new Font("Lucida Handwriting", (float)27.72, FontStyle.Underline);
+                gameTitle.Text = "On The Farm";
+                gameTitle.Location = new Point(239, 9);
+                gameTitle.Size = new Size(293, 48);
+
+                // Player Money
+                gamePlayerMoney = new Label();
+                gamePlayerMoney.AutoSize = true;
+                gamePlayerMoney.Font = labelFont;
+                gamePlayerMoney.Text = "Money: £";
+                gamePlayerMoney.Location = new Point(12, 73);
+                gamePlayerMoney.Size = new Size(82, 16);
+
+                // Player cards label
+                gamePlayerCardsLabel = new Label();
+                gamePlayerCardsLabel.AutoSize = true;
+                gamePlayerCardsLabel.Font = labelFont;
+                gamePlayerCardsLabel.Text = "Your Cards:";
+                gamePlayerCardsLabel.Location = new Point(12, 99);
+                gamePlayerCardsLabel.Size = new Size(86, 16);
+
+                // Player cards list
+                gamePlayerCards = new FlowLayoutPanel();
+                gamePlayerCards.Location = new Point(15, 119);
+                gamePlayerCards.Size = new Size(218, 319);
+                gamePlayerCards.BorderStyle = BorderStyle.FixedSingle;
+                gamePlayerCards.BackColor = Color.White;
+                gamePlayerCards.AutoScroll = true;
+
+
+                // Deck label
+                gameDeckLabel = new Label();
+                gameDeckLabel.AutoSize = true;
+                gameDeckLabel.Font = labelFont;
+                gameDeckLabel.Location = new Point(373, 146);
+                gameDeckLabel.Size = new Size(36, 13);
+                gameDeckLabel.Text = "Deck:";
+
+                // Deck top card colour
+                gameDeckCard = new Label();
+                gameDeckCard.Location = new Point(362, 172);
+                gameDeckCard.Size = new Size(66, 97);
+
+                // Table label
+                gameTableLabel = new Label();
+                gameTableLabel.AutoSize = true;
+                gameTableLabel.Font = labelFont;
+                gameTableLabel.Text = "Table:";
+                gameTableLabel.Location = new Point(377, 321);
+                gameTableLabel.Size = new Size(49, 16);
+
+                // Table list
+                gameTableList = new FlowLayoutPanel();
+                gameTableList.Location = new Point(266, 340);
+                gameTableList.Size = new Size(275, 83);
+                gameTableList.BorderStyle = BorderStyle.FixedSingle;
+                gameTableList.BackColor = Color.White;
+                gameTableList.AutoScroll = true;
+
+
+                // Save Game Button
+                gameSaveGame = new Button();
+                gameSaveGame.Text = "Save Game";
+                gameSaveGame.Location = new Point(706, 9);
+                gameSaveGame.Size = new Size(75, 23);
+                gameSaveGame.Click += SaveToFile;
+
+                // Opponent cards label
+                gameOpponentCardsLabel = new Label();
+                gameOpponentCardsLabel.AutoSize = true;
+                gameOpponentCardsLabel.Font = labelFont;
+                gameOpponentCardsLabel.Location = new Point(567, 107);
+                gameOpponentCardsLabel.Size = new Size(119, 16);
+                gameOpponentCardsLabel.Text = "Opponent's Cards:";
+
+                // Opponent cards list
+                gameOpponentCardsList = new FlowLayoutPanel();
+                gameOpponentCardsList.Location = new Point(570, 127);
+                gameOpponentCardsList.Size = new Size(218, 311);
+                gameOpponentCardsList.BorderStyle = BorderStyle.FixedSingle;
+                gameOpponentCardsList.BackColor = Color.White;
+                gameOpponentCardsList.AutoScroll = true;
+            }
+
+            public void Draw()
+            {
+                form.Controls.Clear();
+
+                form.Controls.Add(gameTitle);
+                form.Controls.Add(gamePlayerMoney);
+                form.Controls.Add(gamePlayerCardsLabel);
+                form.Controls.Add(gamePlayerCards);
+                form.Controls.Add(gameDeckLabel);
+                form.Controls.Add(gameDeckCard);
+                form.Controls.Add(gameTableLabel);
+                form.Controls.Add(gameTableList);
+                form.Controls.Add(gameSaveGame);
+                form.Controls.Add(gameOpponentCardsLabel);
+                form.Controls.Add(gameOpponentCardsList);
+
+                Update();
+            }
+
+            public void Update()
+            {
+
+                gamePlayerMoney.Text = $"Money: £{currentGame.plr1Score}";
+
+                gamePlayerCards.Controls.Clear();
+                for (int i = 0; i < currentGame.plr1Cards.Count; i++)
+                {
+                    Label label = new Label();
+                    label.AutoSize = true;
+                    label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+                    label.Text = $"{currentGame.plr1Cards[i].type}\n£{currentGame.plr1Cards[i].score}";
+                    label.Font = new Font("Lucida Handwriting", (float)8);
+                    label.Margin = new Padding(3);
+                    label.BackColor = TextToColour(currentGame.plr1Cards[i].colour);
+
+                    gamePlayerCards.Controls.Add(label);
+                }
+
+                gameDeckCard.BackColor = TextToColour(currentGame.deck[0].colour);
+
+                gameTableList.Controls.Clear();
+                for (int i = 0; i < currentGame.table.Count; i++)
+                {
+                    Label label = new Label();
+                    label.AutoSize = true;
+                    label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+                    label.Text = $"{currentGame.table[i].type}\n£{currentGame.table[i].score}";
+                    label.Font = new Font("Lucida Handwriting", (float)8);
+                    label.Margin = new Padding(3);
+                    label.BackColor = TextToColour(currentGame.table[i].colour);
+
+                    gameTableList.Controls.Add(label);
+                }
+
+                gameOpponentCardsList.Controls.Clear();
+                for (int i = 0; i < currentGame.plr2Cards.Count; i++)
+                {
+                    Label label = new Label();
+                    label.AutoSize = false;
+                    label.Margin = new Padding(3);
+                    label.Size = new Size(25, 39);
+                    label.BackColor = TextToColour(currentGame.plr2Cards[i].colour);
+
+                    gameOpponentCardsList.Controls.Add(label);
                 }
             }
         }
@@ -409,181 +631,44 @@ namespace Game_Project
 
         public static void PlayGame()
         {
-            #region UI Setup 
-            // Set up UI
-            form.Controls.Clear(); // Ensure that the screen is blank before drawing to it
-            Font labelFont = new Font("Lucida Handwriting", (float)9);
-
-            // Title
-            Label gameTitle = new Label();
-            gameTitle.Font = new Font("Lucida Handwriting", (float)27.72, FontStyle.Underline);
-            gameTitle.Text = "On The Farm";
-            gameTitle.Location = new Point(239, 9);
-            gameTitle.Size = new Size(293, 48);
-
-            // Player Money
-            Label gamePlayerMoney = new Label();
-            gamePlayerMoney.AutoSize = true;
-            gamePlayerMoney.Font = labelFont;
-            gamePlayerMoney.Text = "Money: £";
-            gamePlayerMoney.Location = new Point(12, 73);
-            gamePlayerMoney.Size = new Size(82, 16);
-
-            // Player cards label
-            Label gamePlayerCardsLabel = new Label();
-            gamePlayerCardsLabel.AutoSize = true;
-            gamePlayerCardsLabel.Font = labelFont;
-            gamePlayerCardsLabel.Text = "Your Cards:";
-            gamePlayerCardsLabel.Location = new Point(12, 99);
-            gamePlayerCardsLabel.Size = new Size(86, 16);
-
-            // Player cards list
-            FlowLayoutPanel gamePlayerCards = new FlowLayoutPanel();
-            gamePlayerCards.Location = new Point(15, 119);
-            gamePlayerCards.Size = new Size(218, 319);
-            gamePlayerCards.BorderStyle = BorderStyle.FixedSingle;
-            gamePlayerCards.BackColor = Color.White;
-            gamePlayerCards.AutoScroll = true;
-
-
-            // Deck label
-            Label gameDeckLabel = new Label();
-            gameDeckLabel.AutoSize = true;
-            gameDeckLabel.Font = labelFont;
-            gameDeckLabel.Location = new Point(373, 146);
-            gameDeckLabel.Size = new Size(36, 13);
-            gameDeckLabel.Text = "Deck:";
-
-            // Deck top card colour
-            Label gameDeckCard = new Label();
-            gameDeckCard.Location = new Point(362, 172);
-            gameDeckCard.Size = new Size(66, 97);
-
-            // Table label
-            Label gameTableLabel = new Label();
-            gameTableLabel.AutoSize = true;
-            gameTableLabel.Font = labelFont;
-            gameTableLabel.Text = "Table:";
-            gameTableLabel.Location = new Point(377, 321);
-            gameTableLabel.Size = new Size(49, 16);
-
-            // Table list
-            FlowLayoutPanel gameTableList = new FlowLayoutPanel();
-            gameTableList.Location = new Point(266, 340);
-            gameTableList.Size = new Size(275, 83);
-            gameTableList.BorderStyle = BorderStyle.FixedSingle;
-            gameTableList.BackColor = Color.White;
-            gameTableList.AutoScroll = true;
-
-
-            // Save Game Button
-            Button gameSaveGame = new Button();
-            gameSaveGame.Text = "Save Game";
-            gameSaveGame.Location = new Point(706, 9);
-            gameSaveGame.Size = new Size(75, 23);
-            gameSaveGame.Click += SaveToFile;
-
-            // Opponent cards label
-            Label gameOpponentCardsLabel = new Label();
-            gameOpponentCardsLabel.AutoSize = true;
-            gameOpponentCardsLabel.Font = labelFont;
-            gameOpponentCardsLabel.Location = new Point(567, 107);
-            gameOpponentCardsLabel.Size = new Size(119, 16);
-            gameOpponentCardsLabel.Text = "Opponent's Cards:";
-
-            // Opponent cards list
-            FlowLayoutPanel gameOpponentCardsList = new FlowLayoutPanel();
-            gameOpponentCardsList.Location = new Point(570, 127);
-            gameOpponentCardsList.Size = new Size(218, 311);
-            gameOpponentCardsList.BorderStyle = BorderStyle.FixedSingle;
-            gameOpponentCardsList.BackColor = Color.White;
-            gameOpponentCardsList.AutoScroll = true;
-
-
-            // Draw all components to the screen
-            form.Controls.Add(gameTitle);
-            form.Controls.Add(gamePlayerMoney);
-            form.Controls.Add(gamePlayerCardsLabel);
-            form.Controls.Add(gamePlayerCards);
-            form.Controls.Add(gameDeckLabel);
-            form.Controls.Add(gameDeckCard);
-            form.Controls.Add(gameTableLabel);
-            form.Controls.Add(gameTableList);
-            form.Controls.Add(gameSaveGame);
-            form.Controls.Add(gameOpponentCardsLabel);
-            form.Controls.Add(gameOpponentCardsList);
-
-            #endregion //UI Setup
+            gameUI = new GameUI();
+            gameUI.Draw();
 
             PlayerTurn();
         }
 
         public static void PlayerTurn()
         {
-            #region Update UI Elements
-
-            gamePlayerMoney.Text = $"Money: £{currentGame.plr1Score}";
-
-            gamePlayerCards.Controls.Clear();
-            for (int i = 0; i < currentGame.plr1Cards.Count; i++)
-            {
-                Label label = new Label();
-                label.AutoSize = true;
-                label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-                label.Text = $"{currentGame.plr1Cards[i].type}\n£{currentGame.plr1Cards[i].score}";
-                label.Font = new Font("Lucida Handwriting", (float)8);
-                label.Margin = new Padding(3);
-                label.BackColor = TextToColour(currentGame.plr1Cards[i].colour);
-
-                gamePlayerCards.Controls.Add(label);
-            }
-
-            gameDeckCard.BackColor = TextToColour(currentGame.deck[0].colour);
-
-            gameTableList.Controls.Clear();
-            for (int i = 0; i < currentGame.table.Count; i++)
-            {
-                Label label = new Label();
-                label.AutoSize = true;
-                label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-                label.Text = $"{currentGame.table[i].type}\n£{currentGame.table[i].score}";
-                label.Font = new Font("Lucida Handwriting", (float)8);
-                label.Margin = new Padding(3);
-                label.BackColor = TextToColour(currentGame.table[i].colour);
-
-                gameTableList.Controls.Add(label);
-            }
-
-            gameOpponentCardsList.Controls.Clear();
-            for (int i = 0; i < currentGame.plr2Cards.Count; i++)
-            {
-                Label label = new Label();
-                label.AutoSize = false;
-                label.Margin = new Padding(3);
-                label.Size = new Size(25, 39);
-                label.BackColor = TextToColour(currentGame.plr2Cards[i].colour);
-
-                gameOpponentCardsList.Controls.Add(label);
-            }
-
-            playing = false;
-
-            #endregion // Update UI Elements
-
             #region Option Buttons
 
             Button gameBuy = new Button();
             gameBuy.Text = "Buy";
-            gameBuy.Location = new Point();
+            gameBuy.Location = new Point(238, 119);
+            gameBuy.Size = new Size(75, 23);
+            gameBuy.Click += currentGame.PlayBuy;
 
 
             Button gameSell = new Button();
             gameSell.Text = "Sell";
+            gameSell.Location = new Point(238, 147);
+            gameSell.Size = new Size(75, 23);
 
             Button gameAdd = new Button();
             gameAdd.Text = "Add";
+            gameAdd.Location = new Point(238, 175);
+            gameAdd.Size = new Size(75, 23);
+            gameAdd.Click += currentGame.PlayAdd;
 
+
+            form.Controls.Add(gameBuy);
+            form.Controls.Add(gameSell);
+            form.Controls.Add(gameAdd);
             #endregion
+        }
+
+        public static void AITurn()
+        {
+            throw new NotImplementedException();
         }
 
         public static void SaveToFile(object sender, EventArgs e)
