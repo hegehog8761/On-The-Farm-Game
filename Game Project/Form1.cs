@@ -265,10 +265,12 @@ namespace Game_Project
 
             public void PlaySell(int[] cardIs)
             {
+                int offset = 0; // When a card is sold the array is shorted by one so every card is shifted one to the left
                 foreach (int cardI in cardIs)
                 {
-                    plr2Score += plr2Cards[cardI].score;
-                    plr2Cards.RemoveAt(cardI);
+                    plr2Score += plr2Cards[cardI-offset].score;
+                    plr2Cards.RemoveAt(cardI-offset);
+                    offset++;
                 }
                 gameUI.Draw();
                 // Only the AI should ever call this overflow
