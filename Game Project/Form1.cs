@@ -690,11 +690,8 @@ namespace Game_Project
                 {
                     if (cardsString != "")
                     {
-                        if (cardsString != "")
-                        {
-                            string[] cardData = cardsString.Split(',');
-                            p2Cards.Add(new Card(cardData[0], int.Parse(cardData[1]), cardData[2]));
-                        }
+                        string[] cardData = cardsString.Split(',');
+                        p2Cards.Add(new Card(cardData[0], int.Parse(cardData[1]), cardData[2]));
                     }
                 }
                 catch (Exception err)
@@ -752,7 +749,7 @@ namespace Game_Project
             // Cards in the deck
             try
             {
-                cardString = datLines[4].Substring(4);
+                cardString = datLines[4].Substring(2);
                 cardString = cardString.Substring(0, cardString.Length - 2);
             }
             catch
@@ -768,11 +765,8 @@ namespace Game_Project
                 {
                     if (cardsString != "")
                     {
-                        if (cardsString != "")
-                        {
-                            string[] cardData = cardsString.Split(',');
-                            deck.Add(new Card(cardData[0], int.Parse(cardData[1]), cardData[2]));
-                        }
+                        string[] cardData = cardsString.Split(',');
+                        deck.Add(new Card(cardData[0], int.Parse(cardData[1]), cardData[2]));
                     }
                 }
                 catch (Exception err)
@@ -785,7 +779,7 @@ namespace Game_Project
             // Cards on the table
             try
             {
-                cardString = datLines[4].Substring(4);
+                cardString = datLines[5].Substring(2);
                 cardString = cardString.Substring(0, cardString.Length - 2);
             }
             catch
