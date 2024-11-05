@@ -181,7 +181,29 @@ namespace Game_Project
             
             public void BuyHandler(object sender, EventArgs e)
             {
-
+                Button pressed = (Button)sender;
+                string t = pressed.Text.Split('\n')[0];
+                int score = int.Parse(pressed.Text.Split('\n')[1].Trim('£'));
+                int cardIndex = -1;
+                for (int i = 0; i < currentGame.table.Count; i++)
+                {
+                    if (currentGame.table[i].type == t && currentGame.table[i].score == score)
+                    {
+                        cardIndex = i;
+                        break;
+                    }
+                }
+                if (cardIndex == -1)
+                {
+                    throw new Exception("Card selected couldn't be found in table list of cards");
+                }
+                currentGame.plr1Score -= currentGame.table[cardIndex].score;
+                currentGame.plr1Cards.Add(currentGame.table[cardIndex]);
+                currentGame.table.RemoveAt(cardIndex);
+                FillShop();
+                gameUI.Draw();
+                // Only player's button press will ever call this
+                AITurn();
             }
 
             public void PlayBuy(object sender, EventArgs e)
@@ -207,8 +229,11 @@ namespace Game_Project
                 {
                     Button cButton = new Button();
                     cButton.Text = $"{card.type}\n£{card.score}";
+
+                    cButton.AutoSize = true;
                     cButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                     cButton.BackColor = TextToColour(card.colour);
+                    cButton.Font = new Font("Lucida Handwriting", (float)9);
                     cButton.Enabled = card.score <= currentGame.plr1Score; // Enable the button if player has enough money to purchase it
                     cButton.Click += BuyHandler;
 
@@ -222,7 +247,7 @@ namespace Game_Project
                 // -> If it's only one clicked and it's unclicked then allow user to select any box
 
                 #endregion
-                throw new NotImplementedException();
+                // throw new NotImplementedException();
             }
 
             public void PlayBuy(int cardI)
