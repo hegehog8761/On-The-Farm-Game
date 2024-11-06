@@ -420,6 +420,7 @@ namespace Game_Project
             public Button gameSaveGame;
             public Label gameOpponentCardsLabel;
             public FlowLayoutPanel gameOpponentCardsList;
+            public Label deckLeftLabel;
 
             public GameUI()
             {
@@ -509,6 +510,15 @@ namespace Game_Project
                 gameOpponentCardsList.BorderStyle = BorderStyle.FixedSingle;
                 gameOpponentCardsList.BackColor = Color.White;
                 gameOpponentCardsList.AutoScroll = true;
+
+                // Number of cards left on the deck label
+                deckLeftLabel = new Label();
+                deckLeftLabel.AutoSize = false;
+                deckLeftLabel.Font = labelFont;
+                deckLeftLabel.Location = new Point(347, 274);
+                deckLeftLabel.Size = new Size(98, 16);
+                deckLeftLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+                deckLeftLabel.Text = $"Cards left: {currentGame.deck.Count}";
             }
 
             public void Draw()
@@ -526,6 +536,7 @@ namespace Game_Project
                 form.Controls.Add(gameSaveGame);
                 form.Controls.Add(gameOpponentCardsLabel);
                 form.Controls.Add(gameOpponentCardsList);
+                form.Controls.Add(deckLeftLabel);
 
                 Update();
             }
@@ -576,6 +587,8 @@ namespace Game_Project
 
                     gameOpponentCardsList.Controls.Add(label);
                 }
+
+                deckLeftLabel.Text = $"Cards left: {currentGame.deck.Count}";
             }
         }
 
