@@ -732,7 +732,7 @@ namespace Game_Project
             MainMenu();
         }
 
-        static public object GetRandomArrayItem(object[] list) // Select a random object from a given array
+        public static object GetRandomArrayItem(object[] list) // Select a random object from a given array
         {
             int randChoice = rand.Next(0, list.Length);
             return list[randChoice];
@@ -1093,7 +1093,7 @@ namespace Game_Project
             PlayGame();
         }
 
-        static public void MainMenu()
+        public static void MainMenu()
         {
             form.Controls.Clear(); // Ensure the screen is blank before drawing to it
 
