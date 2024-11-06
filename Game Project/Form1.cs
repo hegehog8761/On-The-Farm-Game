@@ -89,6 +89,8 @@ namespace Game_Project
 
             public List<Card> deck;
             public List<Card> table;
+
+            List<int> plr1SellingIndexes;
             #endregion
 
             public Game()
@@ -206,6 +208,96 @@ namespace Game_Project
                 AITurn();
             }
 
+            public void SellHandler(object sender, EventArgs e)
+            {
+                if (plr1SellingIndexes.Count == 0)
+                {
+                    MessageBox.Show("You can't sell 0 cards!");
+                    return;
+                }
+
+                // Sort card indexes lowest to highest to make the offset function work
+                bool changed = true;
+                while (changed)
+                {
+                    changed = false;
+                    for (int i = 0; i < plr1SellingIndexes.Count - 1; i++)
+                    {
+                        if (plr1SellingIndexes[i] > plr1SellingIndexes[i+1])
+                        {
+                            changed = true;
+                            int oldval = plr1SellingIndexes[i];
+                            plr1SellingIndexes[i] = plr1SellingIndexes[i + 1];
+                            plr1SellingIndexes[i + 1] = oldval;
+                        }
+                    }
+                }
+
+                int offset = 0; 
+                foreach (int index in plr1SellingIndexes)
+                {
+                    plr1Score += plr1Cards[index-offset].score;
+                    plr1Cards.RemoveAt(index-offset);
+                    offset++;
+                }
+
+                // Only a player's button press should ever trigger this function
+                AITurn();
+            }
+
+            public void SellAddHandler(object sender, EventArgs e)
+            {
+                int cardIndex = gameUI.gamePlayerCards.Controls.IndexOf((Control)sender);
+
+                if (cardIndex == -1)
+                {
+                    for (int i = 0; i < gameUI.gamePlayerCards.Controls.Count; i++)
+                    {
+                        if (gameUI.gamePlayerCards.Controls[i].Text == ((CheckBox)sender).Text)
+                        {
+                            cardIndex = i;
+                        }
+                    }
+                    if (cardIndex == -1)
+                    {
+                        throw new Exception("Selected card could not be found in player 1's card list.");
+                    }
+                }
+
+                int currentlySelected = 0;
+                foreach (CheckBox box in gameUI.gamePlayerCards.Controls)
+                {
+                    if (box.Checked) { currentlySelected++; }
+                }
+
+                if (currentlySelected == 1 && ((CheckBox)sender).Checked)
+                {
+                    // First box to be selected
+                    Color colour = ((CheckBox)sender).BackColor;
+                    foreach (CheckBox box in gameUI.gamePlayerCards.Controls)
+                    {
+                        box.Enabled = box.BackColor == colour; // Enable on the butons of the same colour
+                    }
+                }
+
+                if (currentlySelected == 0 && !((CheckBox)sender).Checked)
+                {
+                    // Last box to be deselcted
+                    foreach (CheckBox box in gameUI.gamePlayerCards.Controls)
+                    {
+                        box.Enabled = true;
+                    }
+                }
+
+                if (((CheckBox)sender).Checked)
+                {
+                    plr1SellingIndexes.Add(cardIndex);
+                } else
+                {
+                    plr1SellingIndexes.Remove(cardIndex);
+                }
+            }
+
             public void PlayBuy(object sender, EventArgs e)
             {
                 // Only ever called by player's button press
@@ -243,8 +335,8 @@ namespace Game_Project
                 //// THIS IS ALL FOR THE SELLING FUNCTION, NOT BUYING
                 // Draw sell button back on 
                 // Change all buttons to selectable box
-                // On click of check box if it's the only one, in that case disable all rest of non-same colour
-                // -> If it's only one clicked and it's unclicked then allow user to select any box
+                // On click of check box if it's the only one, in that case disable all rest of non-same colour 
+                // -> If it's only one clicked and it's unclicked then allow user to select any box 
 
                 #endregion
             }
@@ -291,9 +383,12 @@ namespace Game_Project
                 playSellConfirm.Text = "Sell";
                 playSellConfirm.Location = new Point(238, 147);
                 playSellConfirm.Size = new Size(75, 23);
+                playSellConfirm.Click += SellHandler;
 
                 form.Controls.Add(playSellBack);
                 form.Controls.Add(playSellConfirm);
+
+                plr1SellingIndexes = new List<int>();
 
                 // Convert all of the player's cards to select boxes
                 gameUI.gamePlayerCards.Controls.Clear();
@@ -305,6 +400,7 @@ namespace Game_Project
                     box.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                     box.AutoSize = true;
                     box.Font = new Font("Lucida Handwriting", (float)9);
+                    box.Click += SellAddHandler;
 
                     gameUI.gamePlayerCards.Controls.Add(box);
                 }
