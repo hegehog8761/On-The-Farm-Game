@@ -247,7 +247,6 @@ namespace Game_Project
                 // -> If it's only one clicked and it's unclicked then allow user to select any box
 
                 #endregion
-                // throw new NotImplementedException();
             }
 
             public void PlayBuy(int cardI)
@@ -275,6 +274,40 @@ namespace Game_Project
                 gameUI.Draw();
                 // Only the AI should ever call this overflow
                 PlayerTurn();
+            }
+
+            public void PlaySell(object sender, EventArgs e)
+            {
+                // Change UI to have back button and (confirm) sell button
+                gameUI.Draw();
+
+                Button playSellBack = new Button();
+                playSellBack.Text = "Back";
+                playSellBack.Location = new Point(238, 119);
+                playSellBack.Size = new Size(75, 23);
+                playSellBack.Click += PlayerTurn;
+
+                Button playSellConfirm = new Button();
+                playSellConfirm.Text = "Sell";
+                playSellConfirm.Location = new Point(238, 147);
+                playSellConfirm.Size = new Size(75, 23);
+
+                form.Controls.Add(playSellBack);
+                form.Controls.Add(playSellConfirm);
+
+                // Convert all of the player's cards to select boxes
+                gameUI.gamePlayerCards.Controls.Clear();
+                foreach (Card card in currentGame.plr1Cards)
+                {
+                    CheckBox box = new CheckBox();
+                    box.BackColor = TextToColour(card.colour);
+                    box.Text = $"{card.type}\n£{card.score}";
+                    box.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+                    box.AutoSize = true;
+                    box.Font = new Font("Lucida Handwriting", (float)9);
+
+                    gameUI.gamePlayerCards.Controls.Add(box);
+                }
             }
         }
 
@@ -859,6 +892,7 @@ namespace Game_Project
             gameSell.Text = "Sell";
             gameSell.Location = new Point(238, 147);
             gameSell.Size = new Size(75, 23);
+            gameSell.Click += currentGame.PlaySell;
 
             Button gameAdd = new Button();
             gameAdd.Text = "Add";
@@ -871,8 +905,6 @@ namespace Game_Project
             form.Controls.Add(gameSell);
             form.Controls.Add(gameAdd);
             #endregion
-
-            //throw new NotImplementedException();
         }
 
         public static void AITurn()
