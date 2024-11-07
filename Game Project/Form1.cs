@@ -736,9 +736,6 @@ namespace Game_Project
 
         // Functions are alphabetically sorted
 
-
-        // IMPORTANT: ADD CODE TO ALLOW PLAYERS TO SELL MULTIPLE CARDS OF SAME COLOUR FOR BONUS MONEY
-
         public static void AITurn()
         {
             if (currentGame.playing)
