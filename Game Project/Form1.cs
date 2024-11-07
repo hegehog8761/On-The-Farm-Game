@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -295,12 +296,12 @@ namespace Game_Project
             public void BuyHandler(object sender, EventArgs e)
             {
                 Button pressed = (Button)sender;
-                string t = pressed.Text.Split('\n')[0];
+                string type = pressed.Text.Split('\n')[0];
                 int score = int.Parse(pressed.Text.Split('\n')[1].Trim('£'));
                 int cardIndex = -1;
                 for (int i = 0; i < currentGame.table.Count; i++)
                 {
-                    if (currentGame.table[i].type == t && currentGame.table[i].score == score)
+                    if (currentGame.table[i].type == type && currentGame.table[i].score == score)
                     {
                         cardIndex = i;
                         break;
