@@ -1,24 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.IO;
-using System.Windows.Forms.VisualStyles;
-using System.Runtime.InteropServices;
-using System.Drawing.Imaging;
-using System.Drawing.Text;
-using System.Runtime.CompilerServices;
-using System.Diagnostics;
-using System.Runtime.InteropServices.ComTypes;
-using System.Data.SqlClient;
-using static Game_Project.Form1;
-using System.Deployment.Application;
-using System.Dynamic;
+using System.Windows.Forms;
 
 namespace Game_Project
 {
@@ -307,7 +291,7 @@ namespace Game_Project
                 table.Add(deck[0]);
                 deck.RemoveAt(0);
             }
-            
+
             public void BuyHandler(object sender, EventArgs e)
             {
                 Button pressed = (Button)sender;
@@ -350,7 +334,7 @@ namespace Game_Project
                     changed = false;
                     for (int i = 0; i < plr1SellingIndexes.Count - 1; i++)
                     {
-                        if (plr1SellingIndexes[i] > plr1SellingIndexes[i+1])
+                        if (plr1SellingIndexes[i] > plr1SellingIndexes[i + 1])
                         {
                             changed = true;
                             int oldval = plr1SellingIndexes[i];
@@ -360,11 +344,11 @@ namespace Game_Project
                     }
                 }
 
-                int offset = 0; 
+                int offset = 0;
                 foreach (int index in plr1SellingIndexes)
                 {
-                    plr1Score += plr1Cards[index-offset].score;
-                    plr1Cards.RemoveAt(index-offset);
+                    plr1Score += plr1Cards[index - offset].score;
+                    plr1Cards.RemoveAt(index - offset);
                     offset++;
                 }
 
@@ -419,7 +403,8 @@ namespace Game_Project
                 if (((CheckBox)sender).Checked)
                 {
                     plr1SellingIndexes.Add(cardIndex);
-                } else
+                }
+                else
                 {
                     plr1SellingIndexes.Remove(cardIndex);
                 }
@@ -443,7 +428,7 @@ namespace Game_Project
 
                 // Convert all cards on table to buttons
                 gameUI.gameTableList.Controls.Clear(); // Remove cards as labels from the table
-                
+
                 foreach (Card card in currentGame.table)
                 {
                     Button cButton = new Button();
@@ -486,8 +471,8 @@ namespace Game_Project
                 int offset = 0; // When a card is sold the array is shorted by one so every card is shifted one to the left
                 foreach (int cardI in cardIs)
                 {
-                    plr2Score += plr2Cards[cardI-offset].score;
-                    plr2Cards.RemoveAt(cardI-offset);
+                    plr2Score += plr2Cards[cardI - offset].score;
+                    plr2Cards.RemoveAt(cardI - offset);
                     offset++;
                 }
                 gameUI.Draw();
@@ -690,7 +675,8 @@ namespace Game_Project
                 if (currentGame.deck.Count > 0)
                 {
                     gameDeckCard.BackColor = TextToColour(currentGame.deck[0].colour);
-                } else
+                }
+                else
                 {
                     EndGame();
                 }
@@ -728,7 +714,7 @@ namespace Game_Project
             {
                 currentGame.playing = false;
                 form.Controls.Clear();
-                
+
 
                 int winner = currentGame.plr1Score > currentGame.plr2Score ? 1 : 2;
                 winner = currentGame.plr1Score == currentGame.plr2Score ? 0 : winner;
@@ -1049,7 +1035,7 @@ namespace Game_Project
 
         public static void PlayerTurn()
         {
-            if (currentGame.playing) 
+            if (currentGame.playing)
             {
                 gameUI.Draw();
                 #region Option Buttons
