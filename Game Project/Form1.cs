@@ -344,6 +344,8 @@ namespace Game_Project
                     }
                 }
 
+                plr1Score += 5 * (plr1SellingIndexes.Count - 1);
+
                 int offset = 0;
                 foreach (int index in plr1SellingIndexes)
                 {
@@ -468,6 +470,7 @@ namespace Game_Project
 
             public void PlaySell(int[] cardIs)
             {
+                plr2Score += 5 * (cardIs.Length - 1);
                 int offset = 0; // When a card is sold the array is shorted by one so every card is shifted one to the left
                 foreach (int cardI in cardIs)
                 {
@@ -732,6 +735,9 @@ namespace Game_Project
         }
 
         // Functions are alphabetically sorted
+
+
+        // IMPORTANT: ADD CODE TO ALLOW PLAYERS TO SELL MULTIPLE CARDS OF SAME COLOUR FOR BONUS MONEY
 
         public static void AITurn()
         {
