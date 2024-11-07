@@ -216,6 +216,8 @@ namespace Game_Project
             public List<Card> table;
 
             List<int> plr1SellingIndexes;
+
+            public bool playing = true;
             #endregion
 
             public Game()
@@ -685,7 +687,13 @@ namespace Game_Project
                     gamePlayerCards.Controls.Add(label);
                 }
 
-                gameDeckCard.BackColor = TextToColour(currentGame.deck[0].colour);
+                if (currentGame.deck.Count > 0)
+                {
+                    gameDeckCard.BackColor = TextToColour(currentGame.deck[0].colour);
+                } else
+                {
+                    EndGame();
+                }
 
                 gameTableList.Controls.Clear();
                 for (int i = 0; i < currentGame.table.Count; i++)
@@ -715,29 +723,52 @@ namespace Game_Project
 
                 deckLeftLabel.Text = $"Cards left: {currentGame.deck.Count}";
             }
+
+            public void EndGame()
+            {
+                currentGame.playing = false;
+                form.Controls.Clear();
+                
+
+                int winner = currentGame.plr1Score > currentGame.plr2Score ? 1 : 2;
+                winner = currentGame.plr1Score == currentGame.plr2Score ? 0 : winner;
+
+                Label winnerBox = new Label();
+                winnerBox.AutoSize = false;
+                winnerBox.Text = winner == 0 ? "Everyone Won!" : $"Player {winner} won!";
+                winnerBox.Font = new Font("Lucida Handwriting", (float)72);
+                winnerBox.Location = new Point(5, 156);
+                winnerBox.Size = new Size(783, 124);
+                winnerBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+                form.Controls.Add(winnerBox);
+            }
         }
 
         // Functions are alphabetically sorted
 
         public static void AITurn()
         {
-            AI mainAI = new AI();
-            object[] decision = mainAI.Run();
-            if (decision.Length == 1 && decision[0] == "Add Card")
+            if (currentGame.playing)
             {
-                currentGame.PlayAdd();
-            }
-            else if (decision[0] == "Buy Card")
-            {
-                currentGame.PlayBuy((int)decision[1]);
-            }
-            else if (decision[0] == "Sell Cards")
-            {
-                currentGame.PlaySell((int[])decision[1]);
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException();
+                AI mainAI = new AI();
+                object[] decision = mainAI.Run();
+                if (decision.Length == 1 && decision[0] == "Add Card")
+                {
+                    currentGame.PlayAdd();
+                }
+                else if (decision[0] == "Buy Card")
+                {
+                    currentGame.PlayBuy((int)decision[1]);
+                }
+                else if (decision[0] == "Sell Cards")
+                {
+                    currentGame.PlaySell((int[])decision[1]);
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
             }
         }
 
@@ -1018,33 +1049,36 @@ namespace Game_Project
 
         public static void PlayerTurn()
         {
-            gameUI.Draw();
-            #region Option Buttons
+            if (currentGame.playing) 
+            {
+                gameUI.Draw();
+                #region Option Buttons
 
-            Button gameBuy = new Button();
-            gameBuy.Text = "Buy";
-            gameBuy.Location = new Point(238, 119);
-            gameBuy.Size = new Size(75, 23);
-            gameBuy.Click += currentGame.PlayBuy;
-
-
-            Button gameSell = new Button();
-            gameSell.Text = "Sell";
-            gameSell.Location = new Point(238, 147);
-            gameSell.Size = new Size(75, 23);
-            gameSell.Click += currentGame.PlaySell;
-
-            Button gameAdd = new Button();
-            gameAdd.Text = "Add";
-            gameAdd.Location = new Point(238, 175);
-            gameAdd.Size = new Size(75, 23);
-            gameAdd.Click += currentGame.PlayAdd;
+                Button gameBuy = new Button();
+                gameBuy.Text = "Buy";
+                gameBuy.Location = new Point(238, 119);
+                gameBuy.Size = new Size(75, 23);
+                gameBuy.Click += currentGame.PlayBuy;
 
 
-            form.Controls.Add(gameBuy);
-            form.Controls.Add(gameSell);
-            form.Controls.Add(gameAdd);
-            #endregion
+                Button gameSell = new Button();
+                gameSell.Text = "Sell";
+                gameSell.Location = new Point(238, 147);
+                gameSell.Size = new Size(75, 23);
+                gameSell.Click += currentGame.PlaySell;
+
+                Button gameAdd = new Button();
+                gameAdd.Text = "Add";
+                gameAdd.Location = new Point(238, 175);
+                gameAdd.Size = new Size(75, 23);
+                gameAdd.Click += currentGame.PlayAdd;
+
+
+                form.Controls.Add(gameBuy);
+                form.Controls.Add(gameSell);
+                form.Controls.Add(gameAdd);
+                #endregion
+            }
         }
 
         public static void PlayerTurn(object sender, EventArgs e)
