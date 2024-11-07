@@ -462,7 +462,7 @@ namespace Game_Project
                 Card purchasedCard = deck[cardI];
                 deck.RemoveAt(cardI);
                 FillShop();
-                plr1Score -= purchasedCard.score;
+                plr2Score -= purchasedCard.score;
                 plr2Cards.Add(purchasedCard);
                 gameUI.Draw();
                 // Only the AI should ever run this function overflow
