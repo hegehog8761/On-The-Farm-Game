@@ -25,12 +25,140 @@ namespace Game_Project
     public partial class Form1 : Form
     {
         // Global variables
-        static Random rand = new Random();
-        static Form form;
         static Game currentGame;
+        static Form form;
         static GameUI gameUI;
+        static Random rand = new Random();
 
         // Classes are sorted by alphabetical order.
+
+        public class AI
+        {
+            public object[] Run() // Returns {"decision", cardI}
+            {
+                List<object[]> possibleGames = new List<object[]>(); // {move, score}
+
+                // Add a card to the deck
+                object[] cGame = new object[2];
+                cGame[0] = "Add Card";
+                int addScore = 0;
+                int playerCards = 0; // Number of cards of same colour as top of deck that opponent has
+                foreach (Card card in currentGame.plr1Cards)
+                {
+                    if (card.colour == currentGame.deck[0].colour)
+                    {
+                        playerCards++;
+                    }
+                }
+                addScore -= 5 * (playerCards - 1) < 0 ? 0 : 5 * (playerCards - 1); // Remove some points based on how much it would benefit the player to have the card on the top of the deck
+
+                int AICards = 0; // Number of cards of same colour as top of deck that AI has
+                foreach (Card card in currentGame.plr2Cards)
+                {
+                    if (card.colour == currentGame.deck[0].colour)
+                    {
+                        AICards++;
+                    }
+                }
+                addScore += 5 * (AICards - 1) < 0 ? 0 : 5 * (AICards - 1); // Add some points based off of how much it would benefit the AI to have the card on top of the deck
+
+                cGame[1] = addScore; // Current game's score 
+                possibleGames.Add(cGame);
+
+                // Buying a card
+
+                for (int i = 0; i < currentGame.table.Count; i++)
+                {
+                    Card card = currentGame.table[i];
+                    if (currentGame.plr2Score < card.score)
+                    {
+                        continue; // AI doesn't have enough money to buy it so don't add it as an option
+                    }
+                    int qnty = 2;
+                    int cBuyScore = 0;
+                    if (currentGame.table.Count == 5) // Only if a card will be added back to the table on purchase of a card
+                    {
+                        cBuyScore -= 5 * (playerCards - 1) < 0 ? 0 : 5 * (playerCards - 1); // Remove some points based on what it would add to the shop for the other player
+
+                        cBuyScore += 5 * (AICards - 1) < 0 ? 0 : 5 * (AICards - 1); // Add point based on what it would add to the shop for the AI
+
+                        qnty++;
+                    }
+
+                    cBuyScore += 5 * (AICards - 1) < 0 ? 0 : 5 * (AICards - 1); // Add points based on how much it would benefit AI to have the card
+
+                    cBuyScore += 5 * (playerCards - 1) < 0 ? 0 : 5 * (playerCards - 1); // Add points based on how much it would hinder the opponent for not having it
+
+                    int avg = cBuyScore / qnty;
+
+                    cGame = new object[] { new object[] { "Buy Card", i }, avg };
+                    possibleGames.Add(cGame);
+                }
+
+                // Selling cards
+                List<Card> redCards = new List<Card>();
+                List<Card> greenCards = new List<Card>();
+                List<Card> yellowCards = new List<Card>();
+                List<Card> purpleCards = new List<Card>();
+
+                foreach (Card card in currentGame.plr2Cards)
+                {
+                    switch (card.colour)
+                    {
+                        case "Red":
+                            redCards.Add(card); break;
+                        case "Green":
+                            greenCards.Add(card); break;
+                        case "Yellow":
+                            yellowCards.Add(card); break;
+                        case "Purple":
+                            purpleCards.Add(card); break;
+                    }
+                }
+
+                // Add actual algorithms for selling scores, need to prioritise selling cards when the deck is down to 5-10 cards
+                // Maybe even reduce bias towards buying cards towards the end of the game and just add cards if sell out too soon
+
+                foreach (List<Card> colourList in new List<List<Card>>() { redCards, greenCards, yellowCards, purpleCards })
+                {
+                    if (colourList.Count > 0)
+                    {
+                        int colourScore = 5 * (colourList.Count - 1) < 0 ? 0 : 5 * (colourList.Count - 1);
+                        int[] colourIs = new int[colourList.Count];
+                        for (int i = 0; i < colourList.Count; i++)
+                        {
+                            colourIs[i] = currentGame.plr2Cards.IndexOf(colourList[i]);
+                        }
+                        possibleGames.Add(new object[] { new object[] { "Sell Cards", colourIs }, colourScore });
+                    }
+                }
+
+                // Sort the options best to worse 
+                bool changed = true;
+                while (changed)
+                {
+                    changed = false;
+                    for (int i = 0; i < possibleGames.Count - 1; i++)
+                    {
+                        if ((int)possibleGames[i][1] < (int)possibleGames[i + 1][1])
+                        {
+                            changed = true;
+                            object[] oldVal = possibleGames[i];
+                            possibleGames[i] = possibleGames[i + 1];
+                            possibleGames[i + 1] = oldVal;
+                        }
+                    }
+                }
+                if (possibleGames[0][0] == "Add Card")
+                {
+                    return new object[] { "Add Card" };
+                }
+                else
+                {
+                    return (object[])possibleGames[0][0];
+                }
+            }
+        }
 
         public class Card
         {
@@ -589,134 +717,29 @@ namespace Game_Project
             }
         }
 
-        public class AI
+        // Functions are alphabetically sorted
+
+        public static void AITurn()
         {
-            public object[] Run() // Returns {"decision", cardI}
+            AI mainAI = new AI();
+            object[] decision = mainAI.Run();
+            if (decision.Length == 1 && decision[0] == "Add Card")
             {
-                List<object[]> possibleGames = new List<object[]>(); // {move, score}
-
-                // Add a card to the deck
-                object[] cGame = new object[2];
-                cGame[0] = "Add Card";
-                int addScore = 0;
-                int playerCards = 0; // Number of cards of same colour as top of deck that opponent has
-                foreach (Card card in currentGame.plr1Cards)
-                {
-                    if (card.colour == currentGame.deck[0].colour)
-                    {
-                        playerCards++;
-                    }
-                }
-                addScore -= 5 * (playerCards - 1) < 0 ? 0 : 5 * (playerCards - 1); // Remove some points based on how much it would benefit the player to have the card on the top of the deck
-
-                int AICards = 0; // Number of cards of same colour as top of deck that AI has
-                foreach (Card card in currentGame.plr2Cards)
-                {
-                    if (card.colour == currentGame.deck[0].colour)
-                    {
-                        AICards++;
-                    }
-                }
-                addScore += 5 * (AICards - 1) < 0 ? 0 : 5 * (AICards - 1); // Add some points based off of how much it would benefit the AI to have the card on top of the deck
-
-                cGame[1] = addScore; // Current game's score 
-                possibleGames.Add(cGame);
-
-                // Buying a card
-
-                for (int i = 0; i < currentGame.table.Count; i++)
-                {
-                    Card card = currentGame.table[i];
-                    if (currentGame.plr2Score < card.score)
-                    {
-                        continue; // AI doesn't have enough money to buy it so don't add it as an option
-                    }
-                    int qnty = 2;
-                    int cBuyScore = 0;
-                    if (currentGame.table.Count == 5) // Only if a card will be added back to the table on purchase of a card
-                    {
-                        cBuyScore -= 5 * (playerCards - 1) < 0 ? 0 : 5 * (playerCards - 1); // Remove some points based on what it would add to the shop for the other player
-
-                        cBuyScore += 5 * (AICards - 1) < 0 ? 0 : 5 * (AICards - 1); // Add point based on what it would add to the shop for the AI
-
-                        qnty++;
-                    }
-
-                    cBuyScore += 5 * (AICards - 1) < 0 ? 0 : 5 * (AICards - 1); // Add points based on how much it would benefit AI to have the card
-
-                    cBuyScore += 5 * (playerCards - 1) < 0 ? 0 : 5 * (playerCards - 1); // Add points based on how much it would hinder the opponent for not having it
-
-                    int avg = cBuyScore / qnty;
-
-                    cGame = new object[] { new object[] { "Buy Card", i }, avg };
-                    possibleGames.Add(cGame);
-                }
-
-                // Selling cards
-                List<Card> redCards = new List<Card>();
-                List<Card> greenCards = new List<Card>();
-                List<Card> yellowCards = new List<Card>();
-                List<Card> purpleCards = new List<Card>();
-
-                foreach (Card card in currentGame.plr2Cards)
-                {
-                    switch (card.colour)
-                    {
-                        case "Red":
-                            redCards.Add(card); break;
-                        case "Green":
-                            greenCards.Add(card); break;
-                        case "Yellow":
-                            yellowCards.Add(card); break;
-                        case "Purple":
-                            purpleCards.Add(card); break;
-                    }
-                }
-
-                // Add actual algorithms for selling scores, need to prioritise selling cards when the deck is down to 5-10 cards
-                // Maybe even reduce bias towards buying cards towards the end of the game and just add cards if sell out too soon
-
-                foreach (List<Card> colourList in new List<List<Card>>() {redCards, greenCards, yellowCards, purpleCards})
-                {
-                    if (colourList.Count > 0)
-                    {
-                        int colourScore = 5 * (colourList.Count - 1) < 0 ? 0 : 5 * (colourList.Count - 1);
-                        int[] colourIs = new int[colourList.Count];
-                        for (int i = 0; i < colourList.Count; i++)
-                        {
-                            colourIs[i] = currentGame.plr2Cards.IndexOf(colourList[i]);
-                        }
-                        possibleGames.Add(new object[] {new object[] { "Sell Cards", colourIs}, colourScore });
-                    }
-                }
-
-                // Sort the options best to worse 
-                bool changed = true;
-                while (changed)
-                {
-                    changed = false;
-                    for (int i = 0; i < possibleGames.Count-1; i++)
-                    {
-                        if ((int)possibleGames[i][1] < (int)possibleGames[i+1][1])
-                        {
-                            changed = true;
-                            object[] oldVal = possibleGames[i];
-                            possibleGames[i] = possibleGames[i+1];
-                            possibleGames[i+1] = oldVal;
-                        }
-                    }
-                }
-                if (possibleGames[0][0] == "Add Card")
-                {
-                    return new object[] { "Add Card" };
-                } else
-                {
-                    return (object[])possibleGames[0][0];
-                }
+                currentGame.PlayAdd();
+            }
+            else if (decision[0] == "Buy Card")
+            {
+                currentGame.PlayBuy((int)decision[1]);
+            }
+            else if (decision[0] == "Sell Cards")
+            {
+                currentGame.PlaySell((int[])decision[1]);
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException();
             }
         }
-
-        // Functions are alphabetically sorted
 
         public Form1()
         {
@@ -786,7 +809,8 @@ namespace Game_Project
             {
                 cardString = datLines[0].Substring(4);
                 cardString = cardString.Substring(0, cardString.Length - 2);
-            } catch
+            }
+            catch
             {
                 MessageBox.Show("Error FR004\nCouldn't read file.");
                 return;
@@ -805,7 +829,8 @@ namespace Game_Project
                             p1Cards.Add(new Card(cardData[0], int.Parse(cardData[1]), cardData[2]));
                         }
                     }
-                } catch (Exception err)
+                }
+                catch (Exception err)
                 {
                     MessageBox.Show($"Error FR005\nCouldn't read file.\n\n\nError:{err.ToString()}");
                     return;
@@ -858,7 +883,8 @@ namespace Game_Project
             try
             {
                 p1Score = int.Parse(scoreString);
-            } catch
+            }
+            catch
             {
                 MessageBox.Show("Error FR007\nCouldn't read file.");
                 return;
@@ -952,34 +978,42 @@ namespace Game_Project
             PlayGame();
         }
 
-        public static Color TextToColour(string colour)
+        public static void MainMenu()
         {
-            switch (colour)
-            {
-                case "Red": // Red, Green, Yellow, Purple
-                    return Color.Red;
-                case "Green":
-                    return Color.Green;
-                case "Yellow":
-                    return Color.Yellow;
-                case "Purple":
-                    return Color.Purple;
-            }
-            return Color.White;
+            form.Controls.Clear(); // Ensure the screen is blank before drawing to it
+
+            // Title
+            Label menuTitle = new Label();
+            menuTitle.Font = new Font("Lucida Handwriting", (float)27.72, FontStyle.Underline);
+            menuTitle.Text = "On The Farm";
+            menuTitle.Location = new Point(239, 9);
+            menuTitle.Size = new Size(293, 48);
+
+            // Load game button
+            Button menuLoad = new Button();
+            menuLoad.Text = "Load game from file";
+            menuLoad.Location = new Point(74, 213);
+            menuLoad.Size = new Size(148, 42);
+            menuLoad.Click += LoadFromFile;
+
+            // New game button
+            Button menuNew = new Button();
+            menuNew.Text = "Start new game";
+            menuNew.Location = new Point(594, 213);
+            menuNew.Size = new Size(148, 42);
+            menuNew.Click += NewGame;
+
+
+            // Add all elements to screen
+            form.Controls.Add(menuTitle);
+            form.Controls.Add(menuLoad);
+            form.Controls.Add(menuNew);
         }
 
-        public static void PlayGame()
+        public static void NewGame(object sender, EventArgs e)
         {
-            gameUI = new GameUI();
-            gameUI.Draw();
-
-            PlayerTurn();
-        }
-
-
-        public static void PlayerTurn(object sender, EventArgs e)
-        {
-            PlayerTurn();
+            currentGame = new Game();
+            PlayGame();
         }
 
         public static void PlayerTurn()
@@ -1013,25 +1047,17 @@ namespace Game_Project
             #endregion
         }
 
-        public static void AITurn()
+        public static void PlayerTurn(object sender, EventArgs e)
         {
-            AI mainAI = new AI();
-            object[] decision = mainAI.Run();
-            if (decision.Length == 1 && decision[0] == "Add Card")
-            {
-                currentGame.PlayAdd();
-            } 
-            else if (decision[0] == "Buy Card")
-            {
-                currentGame.PlayBuy((int)decision[1]);
-            } 
-            else if (decision[0] == "Sell Cards")
-            {
-                currentGame.PlaySell((int[])decision[1]);
-            }
-            else {
-                throw new ArgumentOutOfRangeException();
-            }
+            PlayerTurn();
+        }
+
+        public static void PlayGame()
+        {
+            gameUI = new GameUI();
+            gameUI.Draw();
+
+            PlayerTurn();
         }
 
         public static void SaveToFile(object sender, EventArgs e)
@@ -1084,42 +1110,20 @@ namespace Game_Project
             }
         }
 
-        public static void NewGame(object sender, EventArgs e)
+        public static Color TextToColour(string colour)
         {
-            currentGame = new Game();
-            PlayGame();
-        }
-
-        public static void MainMenu()
-        {
-            form.Controls.Clear(); // Ensure the screen is blank before drawing to it
-
-            // Title
-            Label menuTitle = new Label();
-            menuTitle.Font = new Font("Lucida Handwriting", (float)27.72, FontStyle.Underline);
-            menuTitle.Text = "On The Farm";
-            menuTitle.Location = new Point(239, 9);
-            menuTitle.Size = new Size(293, 48);
-
-            // Load game button
-            Button menuLoad = new Button();
-            menuLoad.Text = "Load game from file";
-            menuLoad.Location = new Point(74, 213);
-            menuLoad.Size = new Size(148, 42);
-            menuLoad.Click += LoadFromFile;
-
-            // New game button
-            Button menuNew = new Button();
-            menuNew.Text = "Start new game";
-            menuNew.Location = new Point(594, 213);
-            menuNew.Size = new Size(148, 42);
-            menuNew.Click += NewGame;
-
-
-            // Add all elements to screen
-            form.Controls.Add(menuTitle);
-            form.Controls.Add(menuLoad);
-            form.Controls.Add(menuNew);
+            switch (colour)
+            {
+                case "Red": // Red, Green, Yellow, Purple
+                    return Color.Red;
+                case "Green":
+                    return Color.Green;
+                case "Yellow":
+                    return Color.Yellow;
+                case "Purple":
+                    return Color.Purple;
+            }
+            return Color.White;
         }
     }
 }
