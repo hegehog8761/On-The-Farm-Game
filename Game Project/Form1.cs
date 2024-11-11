@@ -298,10 +298,11 @@ namespace Game_Project
                 Button pressed = (Button)sender;
                 string type = pressed.Text.Split('\n')[0];
                 int score = int.Parse(pressed.Text.Split('\n')[1].Trim('£'));
+                Color colour = pressed.BackColor;
                 int cardIndex = -1;
                 for (int i = 0; i < currentGame.table.Count; i++)
                 {
-                    if (currentGame.table[i].type == type && currentGame.table[i].score == score)
+                    if (currentGame.table[i].type == type && currentGame.table[i].score == score && TextToColour(currentGame.table[i].colour) == colour)
                     {
                         cardIndex = i;
                         break;
