@@ -541,35 +541,39 @@ namespace Game_Project
 
             public GameUI()
             {
+                int cFormHeight = form.Height;
+                int cFormWidth = form.Width;
+                int oFormHeight = 489;
+                int oFormWidth = 816;
                 Font labelFont = new Font("Lucida Handwriting", (float)9);
 
                 // Title
                 gameTitle = new Label();
                 gameTitle.Font = new Font("Lucida Handwriting", (float)27.72, FontStyle.Underline);
                 gameTitle.Text = "On The Farm";
-                gameTitle.Location = new Point(239, 9);
-                gameTitle.Size = new Size(293, 48);
+                gameTitle.Location = new Point((239/cFormWidth)*oFormWidth, (9/cFormHeight)*oFormHeight);
+                gameTitle.Size = new Size((293/cFormWidth)*oFormWidth, (48/cFormHeight)*oFormHeight);
 
                 // Player Money
                 gamePlayerMoney = new Label();
                 gamePlayerMoney.AutoSize = true;
                 gamePlayerMoney.Font = labelFont;
                 gamePlayerMoney.Text = "Money: £";
-                gamePlayerMoney.Location = new Point(12, 73);
-                gamePlayerMoney.Size = new Size(82, 16);
+                gamePlayerMoney.Location = new Point((12/cFormWidth)*oFormWidth, (73/cFormHeight)*oFormHeight);
+                gamePlayerMoney.Size = new Size((82/cFormWidth)*oFormWidth, (16/cFormHeight)*oFormHeight);
 
                 // Player cards label
                 gamePlayerCardsLabel = new Label();
                 gamePlayerCardsLabel.AutoSize = true;
                 gamePlayerCardsLabel.Font = labelFont;
                 gamePlayerCardsLabel.Text = "Your Cards:";
-                gamePlayerCardsLabel.Location = new Point(12, 99);
-                gamePlayerCardsLabel.Size = new Size(86, 16);
+                gamePlayerCardsLabel.Location = new Point((12/cFormWidth)*oFormWidth, (99/cFormHeight)*oFormHeight);
+                gamePlayerCardsLabel.Size = new Size((86/cFormWidth)*oFormWidth, (16/cFormHeight)*oFormHeight);
 
                 // Player cards list
                 gamePlayerCards = new FlowLayoutPanel();
-                gamePlayerCards.Location = new Point(15, 119);
-                gamePlayerCards.Size = new Size(218, 319);
+                gamePlayerCards.Location = new Point((15/cFormWidth)*oFormWidth, (119/cFormHeight)*oFormHeight);
+                gamePlayerCards.Size = new Size((218/cFormWidth)*oFormWidth, (319/cFormHeight)*oFormHeight);
                 gamePlayerCards.BorderStyle = BorderStyle.FixedSingle;
                 gamePlayerCards.BackColor = Color.White;
                 gamePlayerCards.AutoScroll = true;
@@ -579,14 +583,14 @@ namespace Game_Project
                 gameDeckLabel = new Label();
                 gameDeckLabel.AutoSize = true;
                 gameDeckLabel.Font = labelFont;
-                gameDeckLabel.Location = new Point(373, 146);
-                gameDeckLabel.Size = new Size(36, 13);
+                gameDeckLabel.Location = new Point((373/cFormWidth)*oFormWidth, (146/cFormHeight)*oFormHeight);
+                gameDeckLabel.Size = new Size((36/cFormWidth)*oFormWidth, (13/cFormHeight)*oFormHeight);
                 gameDeckLabel.Text = "Deck:";
 
                 // Deck top card colour
                 gameDeckCard = new Label();
-                gameDeckCard.Location = new Point(362, 172);
-                gameDeckCard.Size = new Size(66, 97);
+                gameDeckCard.Location = new Point((362/cFormWidth)*oFormWidth, (172/cFormHeight)*oFormHeight);
+                gameDeckCard.Size = new Size((66/cFormWidth)*oFormWidth, (97/cFormHeight)*oFormHeight);
 
                 // Table label
                 gameTableLabel = new Label();
