@@ -368,7 +368,7 @@ namespace Game_Project
                 {
                     for (int i = 0; i < gameUI.gamePlayerCards.Controls.Count; i++)
                     {
-                        if (gameUI.gamePlayerCards.Controls[i].Text == ((CheckBox)sender).Text)
+                        if (gameUI.gamePlayerCards.Controls[i].Text == ((CheckBox)sender).Text && gameUI.gamePlayerCards.Controls[i].BackColor == ((CheckBox)sender).BackColor)
                         {
                             cardIndex = i;
                         }
