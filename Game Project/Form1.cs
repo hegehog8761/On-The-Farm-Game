@@ -14,26 +14,30 @@ namespace Game_Project
         static Form form;
         static GameUI gameUI;
         static Random rand = new Random();
+        static public int cFormHeight;
+        static public int cFormWidth;
+        static public int oFormHeight;
+        static public int oFormWidth;
 
         // Classes are sorted by alphabetical order.
         public class Resizer
         {
             public static float Font(float original)
             {
-                float scaleFactor = ((float)gameUI.cFormHeight * (float)gameUI.cFormWidth) / ((float)gameUI.oFormHeight * (float)gameUI.oFormWidth);
+                float scaleFactor = ((float)cFormHeight * (float)cFormWidth) / ((float)oFormHeight * (float)oFormWidth);
                 return original * scaleFactor;
             }
             public static float Font(int originalI)
             {
                 float originalF = (float)originalI;
-                float scaleFactor = ((float)gameUI.cFormHeight * (float)gameUI.cFormWidth) / ((float)gameUI.oFormHeight * (float)gameUI.oFormWidth);
+                float scaleFactor = ((float)cFormHeight * (float)cFormWidth) / ((float)oFormHeight * (float)oFormWidth);
                 return originalF * scaleFactor;
             }
 
             public static int Height(int original)
             {
                 float oF = (float)original;
-                float scale = (float)gameUI.cFormHeight / (float)gameUI.oFormHeight;
+                float scale = (float)cFormHeight / (float)oFormHeight;
                 
                 return (int)(Math.Round(oF * scale)); 
             }
@@ -41,7 +45,7 @@ namespace Game_Project
             public static int Width(int original)
             {
                 float oF = (float)original;
-                float scale = (float)gameUI.cFormWidth / (float)gameUI.oFormWidth;
+                float scale = (float)cFormWidth / (float)oFormWidth;
                 return (int)(Math.Round(oF * scale));
             }
         }
@@ -163,7 +167,7 @@ namespace Game_Project
                         }
                     }
                 }
-                if (possibleGames[0][0] == "Add Card")
+                if ((string)possibleGames[0][0] == "Add Card")
                 {
                     return new object[] { "Add Card" };
                 }
@@ -566,13 +570,14 @@ namespace Game_Project
             public Label gameOpponentCardsLabel;
             public FlowLayoutPanel gameOpponentCardsList;
             public Label deckLeftLabel;
-            public int cFormHeight = form.Height;
-            public int cFormWidth = form.Width;
-            public int oFormHeight = 489;
-            public int oFormWidth = 816;
 
             public GameUI()
             {
+                cFormHeight = form.Height;
+                cFormWidth = form.Width;
+                oFormHeight = 489;
+                oFormWidth = 816;
+
                 Font labelFont = new Font("Lucida Handwriting", Resizer.Font(9));
 
                 // Title
@@ -702,7 +707,7 @@ namespace Game_Project
                     label.AutoSize = true;
                     label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                     label.Text = $"{currentGame.plr1Cards[i].type}\n£{currentGame.plr1Cards[i].score}";
-                    label.Font = new Font("Lucida Handwriting", (float)(8/(oFormHeight*oFormWidth))*(oFormHeight * oFormWidth));
+                    label.Font = new Font("Lucida Handwriting", Resizer.Font(8));
                     label.Margin = new Padding(3);
                     label.BackColor = TextToColour(currentGame.plr1Cards[i].colour);
 
@@ -776,15 +781,15 @@ namespace Game_Project
             {
                 AI mainAI = new AI();
                 object[] decision = mainAI.Run();
-                if (decision.Length == 1 && decision[0] == "Add Card")
+                if (decision.Length == 1 && (string)decision[0] == "Add Card")
                 {
                     currentGame.PlayAdd();
                 }
-                else if (decision[0] == "Buy Card")
+                else if ((string)decision[0] == "Buy Card")
                 {
                     currentGame.PlayBuy((int)decision[1]);
                 }
-                else if (decision[0] == "Sell Cards")
+                else if ((string)decision[0] == "Sell Cards")
                 {
                     currentGame.PlaySell((int[])decision[1]);
                 }
