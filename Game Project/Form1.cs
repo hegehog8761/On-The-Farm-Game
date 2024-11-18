@@ -22,6 +22,7 @@ namespace Game_Project
         // Classes are sorted by alphabetical order.
         public class Resizer
         {
+            // A static class to take in intagers and convert then into scaled values based on the current dimentions of the window
             public static float Font(float original)
             {
                 float scaleFactor = ((float)cFormHeight * (float)cFormWidth) / ((float)oFormHeight * (float)oFormWidth);
@@ -169,10 +170,12 @@ namespace Game_Project
                 }
                 if ((string)possibleGames[0][0] == "Add Card")
                 {
+                    // Add card needs no more information (like card numbers) to be ran so just return simplest data
                     return new object[] { "Add Card" };
                 }
                 else
                 {
+                    // Return all data on what is wanted and using which cards
                     return (object[])possibleGames[0][0];
                 }
             }
@@ -195,6 +198,7 @@ namespace Game_Project
             {
                 type = (string)GetRandomArrayItem(new string[] { "Cow", "Hay", "Carrots", "Dead Crops", "Wasabi", "Potatoes" });
                 int[] scoreRange = new int[2]; // Different cards have a random different score within a range based on its type
+                // Match the card name to the range of values it can have
                 switch (type)
                 {
                     case "Cow":
@@ -216,8 +220,8 @@ namespace Game_Project
                         scoreRange = new int[] { 5, 30 };
                         break;
                 }
-                score = rand.Next(scoreRange[0], scoreRange[1] + 1);
-                colour = (string)GetRandomArrayItem(new string[] { "Purple", "Green", "Red", "Yellow" });
+                score = rand.Next(scoreRange[0], scoreRange[1] + 1); // Give the card a random value in the type's allowed range
+                colour = (string)GetRandomArrayItem(new string[] { "Purple", "Green", "Red", "Yellow" }); // Give the card a random colour string from list
             }
         }
 
@@ -282,6 +286,7 @@ namespace Game_Project
 
             public void DrawCardDeck(int plr)
             {
+                // Draw a card from the top of the deck and give it to player plr (1 or 2)
                 switch (plr)
                 {
                     case 1:
@@ -296,6 +301,7 @@ namespace Game_Project
 
             public void FillShop()
             {
+                // Make sure that the shop has at least 5 cards in it
                 while (table.Count < 5)
                 {
                     table.Add(deck[0]);
@@ -305,7 +311,7 @@ namespace Game_Project
 
             public void PlayAdd(object sender, EventArgs e)
             {
-                // Called only by the player's button press
+                // Called only by the player's button press to add a card form the deck to the table
                 Add();
                 gameUI.Draw();
                 AITurn();
@@ -313,7 +319,7 @@ namespace Game_Project
 
             public void PlayAdd()
             {
-                // Called only by the AI's desision
+                // Called only by the AI's desision to add a card from the deck to the table
                 Add();
                 gameUI.Draw();
                 PlayerTurn();
@@ -335,6 +341,7 @@ namespace Game_Project
                 int cardIndex = -1;
                 for (int i = 0; i < currentGame.table.Count; i++)
                 {
+                    // Find which card has been slected to be purchased by user
                     if (currentGame.table[i].type == type && currentGame.table[i].score == score && TextToColour(currentGame.table[i].colour) == colour)
                     {
                         cardIndex = i;
@@ -395,10 +402,12 @@ namespace Game_Project
 
             public void SellAddHandler(object sender, EventArgs e)
             {
+                // Function to handle what needs doing when a player presses a select area to add / remove a card from their selling list
                 int cardIndex = gameUI.gamePlayerCards.Controls.IndexOf((Control)sender);
 
                 if (cardIndex == -1)
                 {
+                    // Find the index of the card which was chosen
                     for (int i = 0; i < gameUI.gamePlayerCards.Controls.Count; i++)
                     {
                         if (gameUI.gamePlayerCards.Controls[i].Text == ((CheckBox)sender).Text && gameUI.gamePlayerCards.Controls[i].BackColor == ((CheckBox)sender).BackColor)
@@ -416,6 +425,7 @@ namespace Game_Project
                 foreach (CheckBox box in gameUI.gamePlayerCards.Controls)
                 {
                     if (box.Checked) { currentlySelected++; }
+                    // Calculate how many cards are currently selected
                 }
 
                 if (currentlySelected == 1 && ((CheckBox)sender).Checked)
@@ -467,6 +477,7 @@ namespace Game_Project
 
                 foreach (Card card in currentGame.table)
                 {
+                    // Convert all of the cards on the table into buttons to allow user to press to buy them
                     Button cButton = new Button();
                     cButton.Text = $"{card.type}\n£{card.score}";
 
@@ -479,13 +490,6 @@ namespace Game_Project
 
                     gameUI.gameTableList.Controls.Add(cButton);
                 }
-
-                //// THIS IS ALL FOR THE SELLING FUNCTION, NOT BUYING
-                // Draw sell button back on 
-                // Change all buttons to selectable box
-                // On click of check box if it's the only one, in that case disable all rest of non-same colour 
-                // -> If it's only one clicked and it's unclicked then allow user to select any box 
-
                 #endregion
             }
 
@@ -505,7 +509,7 @@ namespace Game_Project
             public void PlaySell(int[] cardIs)
             {
                 plr2Score += 5 * (cardIs.Length - 1);
-                int offset = 0; // When a card is sold the array is shorted by one so every card is shifted one to the left
+                int offset = 0; // When a card is sold the array is shortened by one so every card is shifted one to the left
                 foreach (int cardI in cardIs)
                 {
                     plr2Score += plr2Cards[cardI - offset].score;
@@ -573,6 +577,7 @@ namespace Game_Project
 
             public GameUI()
             {
+                // Set up all of the windows forms objects for the UI
                 cFormHeight = form.Height;
                 cFormWidth = form.Width;
                 oFormHeight = 489;
@@ -677,6 +682,7 @@ namespace Game_Project
 
             public void Draw()
             {
+                // Function to draw all of the main UI elements to the main form
                 form.Controls.Clear();
 
                 form.Controls.Add(gameTitle);
@@ -697,12 +703,13 @@ namespace Game_Project
 
             public void Update()
             {
-
+                // Function to update the UI when something like cards or money updates
                 gamePlayerMoney.Text = $"Money: £{currentGame.plr1Score}";
 
                 gamePlayerCards.Controls.Clear();
                 for (int i = 0; i < currentGame.plr1Cards.Count; i++)
                 {
+                    // Update all of the player's cards
                     Label label = new Label();
                     label.AutoSize = true;
                     label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -720,12 +727,13 @@ namespace Game_Project
                 }
                 else
                 {
-                    EndGame();
+                    EndGame(); // If there are no cards left end the game
                 }
 
                 gameTableList.Controls.Clear();
                 for (int i = 0; i < currentGame.table.Count; i++)
                 {
+                    // Update all of the table's cards
                     Label label = new Label();
                     label.AutoSize = true;
                     label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -740,6 +748,7 @@ namespace Game_Project
                 gameOpponentCardsList.Controls.Clear();
                 for (int i = 0; i < currentGame.plr2Cards.Count; i++)
                 {
+                    // Update all of the AI's cards
                     Label label = new Label();
                     label.AutoSize = false;
                     label.Margin = new Padding((int)(3/(oFormHeight*oFormWidth))*(oFormHeight*oFormWidth));
@@ -779,6 +788,7 @@ namespace Game_Project
         {
             if (currentGame.playing)
             {
+                // Call the function to make the AI evaluate it's choices and choose the "optimal" move
                 AI mainAI = new AI();
                 object[] decision = mainAI.Run();
                 if (decision.Length == 1 && (string)decision[0] == "Add Card")
@@ -813,8 +823,13 @@ namespace Game_Project
 
         private void Form1_Rescale(object sender, EventArgs e)
         {
+            // Called when the form is rescaled, runs a function to rescale all of the UI elements to the new window dimentions
             Control control = (Control)sender;
-            gameUI = new GameUI();
+            if (!(gameUI is null))
+            {
+                gameUI = new GameUI();
+                gameUI.Draw();
+            }
         }
 
         public static object GetRandomArrayItem(object[] list) // Select a random object from a given array
@@ -846,6 +861,7 @@ namespace Game_Project
                 return;
             }
 
+            // Ensure that all lines end with ;; which is use to signify end of line in the saving to file
             foreach (string line in datLines)
             {
                 if (!line.Trim((char)13).EndsWith(";;"))
@@ -855,6 +871,7 @@ namespace Game_Project
                 }
             }
 
+            // Ensure that data is in the correct order
             string[] startList = new string[] { "p1C:", "p2C:", "p1S:", "p2S:", "d:", "t:" };
             for (int i = 0; i < datLines.Length; i++)
             {
@@ -1045,6 +1062,7 @@ namespace Game_Project
 
         public static void MainMenu()
         {
+            // Load up the load / new game main menu
             form.Controls.Clear(); // Ensure the screen is blank before drawing to it
 
             // Title
@@ -1077,6 +1095,7 @@ namespace Game_Project
 
         public static void NewGame(object sender, EventArgs e)
         {
+            // Create a new game with randomly generated values
             currentGame = new Game();
             PlayGame();
         }
@@ -1087,7 +1106,7 @@ namespace Game_Project
             {
                 gameUI.Draw();
                 #region Option Buttons
-
+                // Update the player's UI to add buttons to allow them to make thir desicion on what move they wish to play
                 Button gameBuy = new Button();
                 gameBuy.Text = "Buy";
                 gameBuy.Location = new Point(238, 119);
@@ -1117,11 +1136,13 @@ namespace Game_Project
 
         public static void PlayerTurn(object sender, EventArgs e)
         {
+            // Called by buttons but they don't give us any information so just default back to the default function with no parameters
             PlayerTurn();
         }
 
         public static void PlayGame()
         {
+            // Update the UI on start of game
             gameUI = new GameUI();
             gameUI.Draw();
 
@@ -1130,6 +1151,9 @@ namespace Game_Project
 
         public static void SaveToFile(object sender, EventArgs e)
         {
+            // Save the game to a file, using a sill arbitrary file formatting system which is exclusive to this game but works
+
+            // Temporarily save all of the information into a string rather than commiting it straight to file
             string outString = "";
             // Player 1 cards
             outString += "p1C:";
@@ -1180,6 +1204,7 @@ namespace Game_Project
 
         public static Color TextToColour(string colour)
         {
+            // Convert a colour given in string version to a Color object
             switch (colour)
             {
                 case "Red": // Red, Green, Yellow, Purple
