@@ -1,0 +1,3 @@
+Need to make it so that it finds the largest rectangle with the same scale as the original rectangle which it can make within the newly sized window scale.
+Probably wants to be something like how the font is scaled
+Need to add padding back to the deck cards and plr2 cards
