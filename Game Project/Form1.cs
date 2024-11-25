@@ -134,7 +134,7 @@ namespace Game_Project
                         }
                     }
                 }
-                if (possibleGames[0][0] == "Add Card")
+                if ((string)possibleGames[0][0] == "Add Card")
                 {
                     return new object[] { "Add Card" };
                 }
@@ -744,15 +744,15 @@ namespace Game_Project
             {
                 AI mainAI = new AI();
                 object[] decision = mainAI.Run();
-                if (decision.Length == 1 && decision[0] == "Add Card")
+                if (decision.Length == 1 && (string)decision[0] == "Add Card")
                 {
                     currentGame.PlayAdd();
                 }
-                else if (decision[0] == "Buy Card")
+                else if ((string)decision[0] == "Buy Card")
                 {
                     currentGame.PlayBuy((int)decision[1]);
                 }
-                else if (decision[0] == "Sell Cards")
+                else if ((string)decision[0] == "Sell Cards")
                 {
                     currentGame.PlaySell((int[])decision[1]);
                 }
