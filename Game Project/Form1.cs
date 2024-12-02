@@ -374,22 +374,19 @@ namespace Game_Project
             public void SellAddHandler(object sender, EventArgs e)
             {
                 // Function to handle what needs doing when a player presses a select area to add / remove a card from their selling list
-                int cardIndex = gameUI.gamePlayerCards.Controls.IndexOf((Control)sender);
+                int cardIndex = -1;
 
+                // Find the index of the card which was chosen
+                for (int i = 0; i < gameUI.gamePlayerCards.Controls.Count; i++)
+                {
+                    if (gameUI.gamePlayerCards.Controls[i].Text == ((CheckBox)sender).Text && gameUI.gamePlayerCards.Controls[i].BackColor == ((CheckBox)sender).BackColor)
+                    {
+                        cardIndex = i;
+                    }
+                }
                 if (cardIndex == -1)
                 {
-                    // Find the index of the card which was chosen
-                    for (int i = 0; i < gameUI.gamePlayerCards.Controls.Count; i++)
-                    {
-                        if (gameUI.gamePlayerCards.Controls[i].Text == ((CheckBox)sender).Text && gameUI.gamePlayerCards.Controls[i].BackColor == ((CheckBox)sender).BackColor)
-                        {
-                            cardIndex = i;
-                        }
-                    }
-                    if (cardIndex == -1)
-                    {
-                        throw new Exception("Selected card could not be found in player 1's card list.");
-                    }
+                    throw new Exception("Selected card could not be found in player 1's card list.");
                 }
 
                 int currentlySelected = 0;
