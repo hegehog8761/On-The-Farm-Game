@@ -101,14 +101,17 @@ namespace Game_Project
                     }
                 }
 
-                // Add actual algorithms for selling scores, need to prioritise selling cards when the deck is down to 5-10 cards
-                // Maybe even reduce bias towards buying cards towards the end of the game and just add cards if sell out too soon
-
+                // Weigh up scores of selling each colour set of cards
                 foreach (List<Card> colourList in new List<List<Card>>() { redCards, greenCards, yellowCards, purpleCards })
                 {
                     if (colourList.Count > 0)
                     {
                         int colourScore = 5 * (colourList.Count - 1) < 0 ? 0 : 5 * (colourList.Count - 1);
+                        // Add bias towards selling cards towards last lot of cards
+                        if (currentGame.deck.Count <= 5)
+                        {
+                            colourScore *= 2;
+                        }
                         int[] colourIs = new int[colourList.Count];
                         for (int i = 0; i < colourList.Count; i++)
                         {
@@ -134,6 +137,8 @@ namespace Game_Project
                         }
                     }
                 }
+
+                // Return the best scoring option
                 if (possibleGames[0][0] == "Add Card")
                 {
                     // Add card needs no more information (like card numbers) to be ran so just return simplest data
@@ -611,7 +616,8 @@ namespace Game_Project
 
                 // Save Game Button
                 gameSaveGame = new Button();
-                gameSaveGame.Text = "Save Game";
+                gameSaveGame.Text = "Save";
+                gameSaveGame.Font = new Font("Lucida Handwriting", (float)8);
                 gameSaveGame.Location = new Point(706, 9);
                 gameSaveGame.Size = new Size(75, 23);
                 gameSaveGame.Click += SaveToFile;
@@ -740,7 +746,16 @@ namespace Game_Project
                 winnerBox.Size = new Size(783, 124);
                 winnerBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
+                Label endScoreBox = new Label();
+                endScoreBox.AutoSize = false;
+                endScoreBox.Font = new Font("Lucida Handwriting", (float)14);
+                endScoreBox.Text = $"Player 1: £{currentGame.plr1Score}\nPlayer 2: £{currentGame.plr2Score}";
+                endScoreBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+                endScoreBox.Location = new Point(300, 269);
+                endScoreBox.Size = new Size(200, 146);
+
                 form.Controls.Add(winnerBox);
+                form.Controls.Add(endScoreBox);
             }
         }
 
@@ -1025,6 +1040,7 @@ namespace Game_Project
 
             // Load game button
             Button menuLoad = new Button();
+            menuLoad.Font = new Font("Lucida Handwriting", (float)8);
             menuLoad.Text = "Load game from file";
             menuLoad.Location = new Point(74, 213);
             menuLoad.Size = new Size(148, 42);
@@ -1033,6 +1049,7 @@ namespace Game_Project
             // New game button
             Button menuNew = new Button();
             menuNew.Text = "Start new game";
+            menuNew.Font = new Font("Lucida Handwriting", (float)8);
             menuNew.Location = new Point(594, 213);
             menuNew.Size = new Size(148, 42);
             menuNew.Click += NewGame;
@@ -1062,6 +1079,7 @@ namespace Game_Project
 
                 Button gameBuy = new Button();
                 gameBuy.Text = "Buy";
+                gameBuy.Font = new Font("Lucida Handwriting", (float)8);
                 gameBuy.Location = new Point(238, 119);
                 gameBuy.Size = new Size(75, 23);
                 gameBuy.Click += currentGame.PlayBuy;
@@ -1069,12 +1087,14 @@ namespace Game_Project
 
                 Button gameSell = new Button();
                 gameSell.Text = "Sell";
+                gameSell.Font = new Font("Lucida Handwriting", (float)8);
                 gameSell.Location = new Point(238, 147);
                 gameSell.Size = new Size(75, 23);
                 gameSell.Click += currentGame.PlaySell;
 
                 Button gameAdd = new Button();
                 gameAdd.Text = "Add";
+                gameAdd.Font = new Font("Lucida Handwriting", (float)8);
                 gameAdd.Location = new Point(238, 175);
                 gameAdd.Size = new Size(75, 23);
                 gameAdd.Click += currentGame.PlayAdd;
