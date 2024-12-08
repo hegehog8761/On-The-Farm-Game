@@ -666,10 +666,47 @@ namespace Game_Project
                 Update();
             }
 
-            public void Update()
+            public void Update(bool animate = true)
             {
                 // Function to update the UI when something like cards or money updates
-                gamePlayerMoney.Text = $"Money: £{currentGame.plr1Score}";
+
+                // Animate money updating
+
+                if (animate)
+                {
+                    int lMoney;
+
+                    try
+                    {
+                        lMoney = int.Parse(gamePlayerMoney.Text.Split('£')[1]);
+                    }
+                    catch
+                    {
+                        lMoney = 0;
+                    }
+
+                    if (currentGame.plr1Score > lMoney) // Player's score has increased
+                    {
+                        for (int cMon = lMoney; cMon < currentGame.plr1Score + 1; cMon++)
+                        {
+                            gamePlayerMoney.Text = $"Money: £{cMon}";
+                            gamePlayerMoney.Update();
+                            System.Threading.Thread.Sleep(0);
+                        }
+                    }
+                    else if (currentGame.plr1Score < lMoney) // Player's score has decreased
+                    {
+                        for (int cMon = lMoney; cMon > currentGame.plr1Score - 1; cMon--)
+                        {
+                            gamePlayerMoney.Text = $"Money: £{cMon}";
+                            gamePlayerMoney.Update();
+                            System.Threading.Thread.Sleep(0);
+                        }
+                    }
+                } else
+                {
+                    gamePlayerMoney.Text = $"Money: £{currentGame.plr1Score}";
+                }
 
                 gamePlayerCards.Controls.Clear();
                 for (int i = 0; i < currentGame.plr1Cards.Count; i++)
