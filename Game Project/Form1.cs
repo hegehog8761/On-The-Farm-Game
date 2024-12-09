@@ -693,7 +693,6 @@ namespace Game_Project
                         changeAnim.Location = new Point(45, 13);
                         changeAnim.Location = new Point(45, 13);
                         changeAnim.Size = new Size(50, 17);
-                        changeAnim.Parent = gameUI.gamePlayerMoney;
 
                         form.Controls.Add(changeAnim);
                         changeAnim.Parent = gameUI.gamePlayerMoney;
