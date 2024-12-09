@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace Game_Project
 {
@@ -666,6 +668,18 @@ namespace Game_Project
                 Update();
             }
 
+            static void UpdateMoneyTicker(Label label)
+            {
+                // Update the money adding animation
+                if (label.Location != new Point(45, 0)) // Not reached end point
+                {
+                    Task.Delay(1).Wait();
+                    label.Location = new Point(45, label.Location.Y - 1);
+
+                    UpdateMoneyTicker(label);
+                }
+            }
+
             public void Update(bool animate = true)
             {
                 // Function to update the UI when something like cards or money updates
@@ -674,8 +688,6 @@ namespace Game_Project
 
                 if (animate)
                 {
-                    // Set up money added animation label
-
                     int lastScore = int.Parse(gamePlayerMoney.Text.Split('£')[1]);
 
                     gamePlayerMoney.Text = $"Money: £{currentGame.plr1Score}";
@@ -691,7 +703,6 @@ namespace Game_Project
                         changeAnim.BackColor = Color.Transparent;
                         changeAnim.Font = new Font("Lucida Handwriting", (float)7);
                         changeAnim.Location = new Point(45, 13);
-                        changeAnim.Location = new Point(45, 13);
                         changeAnim.Size = new Size(50, 17);
 
                         form.Controls.Add(changeAnim);
@@ -699,10 +710,10 @@ namespace Game_Project
 
                         changeAnim.BringToFront();
                         changeAnim.Update();
+                        UpdateMoneyTicker(changeAnim);
+
+                        changeAnim.Parent = null;
                     }
-                   
-
-
                 }
                 else
                 {
