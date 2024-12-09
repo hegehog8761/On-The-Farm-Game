@@ -14,42 +14,8 @@ namespace Game_Project
         static Form form;
         static GameUI gameUI;
         static Random rand = new Random();
-        static public int cFormHeight;
-        static public int cFormWidth;
-        static public int oFormHeight;
-        static public int oFormWidth;
 
         // Classes are sorted by alphabetical order.
-        public class Resizer
-        {
-            // A static class to take in intagers and convert then into scaled values based on the current dimentions of the window
-            public static float Font(float original)
-            {
-                float scaleFactor = ((float)cFormHeight * (float)cFormWidth) / ((float)oFormHeight * (float)oFormWidth);
-                return original * scaleFactor;
-            }
-            public static float Font(int originalI)
-            {
-                float originalF = (float)originalI;
-                float scaleFactor = ((float)cFormHeight * (float)cFormWidth) / ((float)oFormHeight * (float)oFormWidth);
-                return originalF * scaleFactor;
-            }
-
-            public static int Height(int original)
-            {
-                float oF = (float)original;
-                float scale = (float)cFormHeight / (float)oFormHeight;
-                
-                return (int)(Math.Round(oF * scale)); 
-            }
-
-            public static int Width(int original)
-            {
-                float oF = (float)original;
-                float scale = (float)cFormWidth / (float)oFormWidth;
-                return (int)(Math.Round(oF * scale));
-            }
-        }
 
         public class AI
         {
@@ -322,7 +288,7 @@ namespace Game_Project
                 AITurn();
             }
 
-            public void PlayAdd() 
+            public void PlayAdd()
             {
                 // Called only by the AI's desision to add a card from the deck to the table
                 Add();
@@ -428,7 +394,6 @@ namespace Game_Project
                 {
                     // Calculate how many cards are currently selected
                     if (box.Checked) { currentlySelected++; }
-                    // Calculate how many cards are currently selected
                 }
 
                 if (currentlySelected == 1 && ((CheckBox)sender).Checked)
@@ -473,6 +438,7 @@ namespace Game_Project
                 playBuyBack.Location = new Point(238, 119);
                 playBuyBack.Size = new Size(75, 23);
                 playBuyBack.Click += PlayerTurn;
+
                 form.Controls.Add(playBuyBack);
 
                 // Convert all cards on table to buttons
@@ -585,31 +551,31 @@ namespace Game_Project
 
                 // Title
                 gameTitle = new Label();
-                gameTitle.Font = new Font("Lucida Handwriting", Resizer.Font((float)27.72), FontStyle.Underline);
+                gameTitle.Font = new Font("Lucida Handwriting", (float)27.72, FontStyle.Underline);
                 gameTitle.Text = "On The Farm";
-                gameTitle.Location = new Point(Resizer.Width(239), Resizer.Height(9));
-                gameTitle.Size = new Size(Resizer.Width(293), Resizer.Height(48));
+                gameTitle.Location = new Point(239, 9);
+                gameTitle.Size = new Size(293, 48);
 
                 // Player Money
                 gamePlayerMoney = new Label();
                 gamePlayerMoney.AutoSize = true;
                 gamePlayerMoney.Font = labelFont;
                 gamePlayerMoney.Text = "Money: £";
-                gamePlayerMoney.Location = new Point(Resizer.Width(12), Resizer.Height(73));
-                gamePlayerMoney.Size = new Size(Resizer.Width(82), Resizer.Height(16));
+                gamePlayerMoney.Location = new Point(12, 73);
+                gamePlayerMoney.Size = new Size(82, 16);
 
                 // Player cards label
                 gamePlayerCardsLabel = new Label();
                 gamePlayerCardsLabel.AutoSize = true;
                 gamePlayerCardsLabel.Font = labelFont;
                 gamePlayerCardsLabel.Text = "Your Cards:";
-                gamePlayerCardsLabel.Location = new Point(Resizer.Width(12), Resizer.Height(99));
-                gamePlayerCardsLabel.Size = new Size(Resizer.Width(86), Resizer.Height(16));
+                gamePlayerCardsLabel.Location = new Point(12, 99);
+                gamePlayerCardsLabel.Size = new Size(86, 16);
 
                 // Player cards list
                 gamePlayerCards = new FlowLayoutPanel();
-                gamePlayerCards.Location = new Point(Resizer.Width(15), Resizer.Height(119));
-                gamePlayerCards.Size = new Size(Resizer.Width(218), Resizer.Height(319));
+                gamePlayerCards.Location = new Point(15, 119);
+                gamePlayerCards.Size = new Size(218, 319);
                 gamePlayerCards.BorderStyle = BorderStyle.FixedSingle;
                 gamePlayerCards.BackColor = Color.White;
                 gamePlayerCards.AutoScroll = true;
@@ -619,27 +585,27 @@ namespace Game_Project
                 gameDeckLabel = new Label();
                 gameDeckLabel.AutoSize = true;
                 gameDeckLabel.Font = labelFont;
-                gameDeckLabel.Location = new Point(Resizer.Width(373), Resizer.Height(146)  );
-                gameDeckLabel.Size = new Size(Resizer.Width(36), Resizer.Height(13));
+                gameDeckLabel.Location = new Point(373, 146);
+                gameDeckLabel.Size = new Size(36, 13);
                 gameDeckLabel.Text = "Deck:";
 
                 // Deck top card colour
                 gameDeckCard = new Label();
-                gameDeckCard.Location = new Point(Resizer.Width(362), Resizer.Height(172));
-                gameDeckCard.Size = new Size(Resizer.Width(66), Resizer.Height(97));
+                gameDeckCard.Location = new Point(362, 172);
+                gameDeckCard.Size = new Size(66, 97);
 
                 // Table label
                 gameTableLabel = new Label();
                 gameTableLabel.AutoSize = true;
                 gameTableLabel.Font = labelFont;
                 gameTableLabel.Text = "Table:";
-                gameTableLabel.Location = new Point(Resizer.Width(377), Resizer.Height(321));
-                gameTableLabel.Size = new Size(Resizer.Width(49), Resizer.Height(16));
+                gameTableLabel.Location = new Point(377, 321);
+                gameTableLabel.Size = new Size(49, 16);
 
                 // Table list
                 gameTableList = new FlowLayoutPanel();
-                gameTableList.Location = new Point(Resizer.Width(266), Resizer.Height(340));
-                gameTableList.Size = new Size(Resizer.Width(275), Resizer.Height(83));
+                gameTableList.Location = new Point(266, 340);
+                gameTableList.Size = new Size(275, 83);
                 gameTableList.BorderStyle = BorderStyle.FixedSingle;
                 gameTableList.BackColor = Color.White;
                 gameTableList.AutoScroll = true;
@@ -657,14 +623,14 @@ namespace Game_Project
                 gameOpponentCardsLabel = new Label();
                 gameOpponentCardsLabel.AutoSize = true;
                 gameOpponentCardsLabel.Font = labelFont;
-                gameOpponentCardsLabel.Location = new Point(Resizer.Width(567), Resizer.Height(107));
-                gameOpponentCardsLabel.Size = new Size(Resizer.Width(119), Resizer.Height(16));
+                gameOpponentCardsLabel.Location = new Point(567, 107);
+                gameOpponentCardsLabel.Size = new Size(119, 16);
                 gameOpponentCardsLabel.Text = "Opponent's Cards:";
 
                 // Opponent cards list
                 gameOpponentCardsList = new FlowLayoutPanel();
-                gameOpponentCardsList.Location = new Point(Resizer.Width(570), Resizer.Height(127));
-                gameOpponentCardsList.Size = new Size(Resizer.Width(218), Resizer.Height(311));
+                gameOpponentCardsList.Location = new Point(570, 127);
+                gameOpponentCardsList.Size = new Size(218, 311);
                 gameOpponentCardsList.BorderStyle = BorderStyle.FixedSingle;
                 gameOpponentCardsList.BackColor = Color.White;
                 gameOpponentCardsList.AutoScroll = true;
@@ -673,8 +639,8 @@ namespace Game_Project
                 deckLeftLabel = new Label();
                 deckLeftLabel.AutoSize = false;
                 deckLeftLabel.Font = labelFont;
-                deckLeftLabel.Location = new Point(Resizer.Width(347), Resizer.Height(274));
-                deckLeftLabel.Size = new Size(Resizer.Width(98), Resizer.Height(16));
+                deckLeftLabel.Location = new Point(347, 274);
+                deckLeftLabel.Size = new Size(98, 16);
                 deckLeftLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                 deckLeftLabel.Text = $"Cards left: {currentGame.deck.Count}";
             }
@@ -737,7 +703,8 @@ namespace Game_Project
                             System.Threading.Thread.Sleep(0);
                         }
                     }
-                } else
+                }
+                else
                 {
                     gamePlayerMoney.Text = $"Money: £{currentGame.plr1Score}";
                 }
@@ -750,7 +717,7 @@ namespace Game_Project
                     label.AutoSize = true;
                     label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                     label.Text = $"{currentGame.plr1Cards[i].type}\n£{currentGame.plr1Cards[i].score}";
-                    label.Font = new Font("Lucida Handwriting", Resizer.Font(8));
+                    label.Font = new Font("Lucida Handwriting", (float)8);
                     label.Margin = new Padding(3);
                     label.BackColor = TextToColour(currentGame.plr1Cards[i].colour);
 
@@ -774,8 +741,8 @@ namespace Game_Project
                     label.AutoSize = true;
                     label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                     label.Text = $"{currentGame.table[i].type}\n£{currentGame.table[i].score}";
-                    label.Font = new Font("Lucida Handwriting", Resizer.Font(8));
-                    label.Margin = new Padding((int)(3/(oFormHeight*oFormWidth))*(oFormHeight*oFormWidth));
+                    label.Font = new Font("Lucida Handwriting", (float)8);
+                    label.Margin = new Padding(3);
                     label.BackColor = TextToColour(currentGame.table[i].colour);
 
                     gameTableList.Controls.Add(label);
@@ -787,8 +754,8 @@ namespace Game_Project
                     // Update all of the AI's cards
                     Label label = new Label();
                     label.AutoSize = false;
-                    label.Margin = new Padding((int)(3/(oFormHeight*oFormWidth))*(oFormHeight*oFormWidth));
-                    label.Size = new Size(Resizer.Width(25), Resizer.Height(39));
+                    label.Margin = new Padding(3);
+                    label.Size = new Size(25, 39);
                     label.BackColor = TextToColour(currentGame.plr2Cards[i].colour);
 
                     gameOpponentCardsList.Controls.Add(label);
@@ -836,15 +803,15 @@ namespace Game_Project
                 // Call the function to make the AI evaluate it's choices and choose the "optimal" move
                 AI mainAI = new AI();
                 object[] decision = mainAI.Run();
-                if (decision.Length == 1 && (string)decision[0] == "Add Card")
+                if (decision.Length == 1 && decision[0] == "Add Card")
                 {
                     currentGame.PlayAdd();
                 }
-                else if ((string)decision[0] == "Buy Card")
+                else if (decision[0] == "Buy Card")
                 {
                     currentGame.PlayBuy((int)decision[1]);
                 }
-                else if ((string)decision[0] == "Sell Cards")
+                else if (decision[0] == "Sell Cards")
                 {
                     currentGame.PlaySell((int[])decision[1]);
                 }
@@ -864,17 +831,6 @@ namespace Game_Project
         {
             form = this;
             MainMenu();
-        }
-
-        private void Form1_Rescale(object sender, EventArgs e)
-        {
-            // Called when the form is rescaled, runs a function to rescale all of the UI elements to the new window dimentions
-            Control control = (Control)sender;
-            if (!(gameUI is null))
-            {
-                gameUI = new GameUI();
-                gameUI.Draw();
-            }
         }
 
         public static object GetRandomArrayItem(object[] list) // Select a random object from a given array
