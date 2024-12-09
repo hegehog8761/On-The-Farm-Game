@@ -1,0 +1,5 @@
+1. Open the folder where you downloaded the font file. (typically your downloads folder)
+
+2. Right-click on the font file and select "Install" from the context menu.
+
+3. The font will be installed and added to your system fonts and ready to be used in the game.
