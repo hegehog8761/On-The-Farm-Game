@@ -674,7 +674,7 @@ namespace Game_Project
 
                 if (animate)
                 {
-
+                    // Set up money added animation label
 
                     int lastScore = int.Parse(gamePlayerMoney.Text.Split('£')[1]);
 
