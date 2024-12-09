@@ -558,11 +558,11 @@ namespace Game_Project
 
                 // Player Money
                 gamePlayerMoney = new Label();
-                gamePlayerMoney.AutoSize = true;
+                gamePlayerMoney.AutoSize = false;
                 gamePlayerMoney.Font = labelFont;
-                gamePlayerMoney.Text = "Money: £";
+                gamePlayerMoney.Text = "Money: £0";
                 gamePlayerMoney.Location = new Point(12, 73);
-                gamePlayerMoney.Size = new Size(82, 16);
+                gamePlayerMoney.Size = new Size(100, 24); // Makes it large enough to also have space to parent the money adding animation when needed to
 
                 // Player cards label
                 gamePlayerCardsLabel = new Label();
@@ -674,35 +674,36 @@ namespace Game_Project
 
                 if (animate)
                 {
-                    int lMoney;
 
-                    try
-                    {
-                        lMoney = int.Parse(gamePlayerMoney.Text.Split('£')[1]);
-                    }
-                    catch
-                    {
-                        lMoney = 0;
-                    }
 
-                    if (currentGame.plr1Score > lMoney) // Player's score has increased
+                    int lastScore = int.Parse(gamePlayerMoney.Text.Split('£')[1]);
+
+                    gamePlayerMoney.Text = $"Money: £{currentGame.plr1Score}";
+
+                    int diff = currentGame.plr1Score - lastScore;
+
+                    if (diff != 0)
                     {
-                        for (int cMon = lMoney; cMon < currentGame.plr1Score + 1; cMon++)
-                        {
-                            gamePlayerMoney.Text = $"Money: £{cMon}";
-                            gamePlayerMoney.Update();
-                            System.Threading.Thread.Sleep(0);
-                        }
+                        Label changeAnim = new Label();
+                        string symbol = diff < 0 ? "-" : "+";
+                        changeAnim.Text = $"{symbol}£{Math.Abs(diff)}";
+                        changeAnim.ForeColor = diff < 0 ? Color.Red : Color.Green;
+                        changeAnim.BackColor = Color.Transparent;
+                        changeAnim.Font = new Font("Lucida Handwriting", (float)7);
+                        changeAnim.Location = new Point(45, 13);
+                        changeAnim.Location = new Point(45, 13);
+                        changeAnim.Size = new Size(50, 17);
+                        changeAnim.Parent = gameUI.gamePlayerMoney;
+
+                        form.Controls.Add(changeAnim);
+                        changeAnim.Parent = gameUI.gamePlayerMoney;
+
+                        changeAnim.BringToFront();
+                        changeAnim.Update();
                     }
-                    else if (currentGame.plr1Score < lMoney) // Player's score has decreased
-                    {
-                        for (int cMon = lMoney; cMon > currentGame.plr1Score - 1; cMon--)
-                        {
-                            gamePlayerMoney.Text = $"Money: £{cMon}";
-                            gamePlayerMoney.Update();
-                            System.Threading.Thread.Sleep(0);
-                        }
-                    }
+                   
+
+
                 }
                 else
                 {
