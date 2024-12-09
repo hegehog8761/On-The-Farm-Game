@@ -583,8 +583,6 @@ namespace Game_Project
                 // Set up all of the windows forms objects for the UI
                 Font labelFont = new Font("Lucida Handwriting", (float)9);
 
-                Font labelFont = new Font("Lucida Handwriting", Resizer.Font(9));
-
                 // Title
                 gameTitle = new Label();
                 gameTitle.Font = new Font("Lucida Handwriting", Resizer.Font((float)27.72), FontStyle.Underline);
