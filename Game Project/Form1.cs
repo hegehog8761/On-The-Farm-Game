@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using System.Drawing;
 
 namespace Game_Project
 {
@@ -834,7 +835,7 @@ namespace Game_Project
         }
 
         public Form1()
-        {
+        { 
             InitializeComponent();
         }
 
@@ -1074,6 +1075,26 @@ namespace Game_Project
 
         public static void MainMenu()
         {
+            // Check if user has 'Lucida Handwriting' font installed on their system already
+
+            Font testFont = new Font("Lucida Handwriting", (float)58);
+
+            if (testFont.FontFamily.ToString() == "[FontFamily: Name=Lucida Handwriting]")
+            {
+                var fontResponse = MessageBox.Show("It appears that the font usually used by this game is not installed on your system. \n\nInstall (Yes), Continue without (No) or Exit (Cancel)?", "Font not found", MessageBoxButtons.YesNoCancel);
+
+                if (fontResponse == DialogResult.Yes)
+                {
+                    Process.Start("https://github.com/hegehog8761/On-The-Farm-Game/raw/refs/heads/master/Game%20Project/lucidahandwriting.ttf");
+                    Process.Start("https://raw.githubusercontent.com/hegehog8761/On-The-Farm-Game/refs/heads/master/Game%20Project/how_to_install_font.txt");
+
+                    Application.Exit();
+                } else if (fontResponse == DialogResult.Cancel)
+                {
+                    Application.Exit();
+                }
+            }
+
             // Load up the load / new game main menu
             form.Controls.Clear(); // Ensure the screen is blank before drawing to it
 
