@@ -22,6 +22,8 @@ namespace Game_Project
         {
             public object[] Run() // Returns {"decision", cardI}
             {
+                Console.WriteLine("AI RAN");
+
                 List<object[]> possibleGames = new List<object[]>(); // {move, score}
 
                 // Add a card to the deck
@@ -439,6 +441,7 @@ namespace Game_Project
                 playBuyBack.Location = new Point(238, 119);
                 playBuyBack.Size = new Size(75, 23);
                 playBuyBack.Click += PlayerTurn;
+                playBuyBack.Font = new Font("Lucida Handwriting", (float)8);
 
                 form.Controls.Add(playBuyBack);
 
@@ -501,12 +504,14 @@ namespace Game_Project
                 playSellBack.Location = new Point(238, 119);
                 playSellBack.Size = new Size(75, 23);
                 playSellBack.Click += PlayerTurn;
+                playSellBack.Font = new Font("Lucida Handwriting", (float)8);
 
                 Button playSellConfirm = new Button();
                 playSellConfirm.Text = "Sell";
                 playSellConfirm.Location = new Point(238, 147);
                 playSellConfirm.Size = new Size(75, 23);
                 playSellConfirm.Click += SellHandler;
+                playSellConfirm.Font = new Font("Lucida Handwriting", (float)8);
 
                 form.Controls.Add(playSellBack);
                 form.Controls.Add(playSellConfirm);
