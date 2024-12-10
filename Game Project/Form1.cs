@@ -1081,7 +1081,7 @@ namespace Game_Project
 
             if (testFont.FontFamily.ToString() != "[FontFamily: Name=Lucida Handwriting]")
             {
-                var fontResponse = MessageBox.Show("It appears that the font usually used by this game is not installed on your system. \n\nInstall (Yes), Continue without (No) or Exit (Cancel)?", "Font not found", MessageBoxButtons.YesNoCancel);
+                DialogResult fontResponse = MessageBox.Show("It appears that the font usually used by this game is not installed on your system. \n\nInstall (Yes), Continue without (No) or Exit (Cancel)?", "Font not found", MessageBoxButtons.YesNoCancel);
 
                 if (fontResponse == DialogResult.Yes)
                 {
