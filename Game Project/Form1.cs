@@ -22,7 +22,7 @@ namespace Game_Project
         {
             public object[] Run() // Returns {"decision", cardI}
             {
-                Console.WriteLine("AI RAN");
+                Console.WriteLine($"AI RAN @ {DateTime.Now.Second}");
 
                 List<object[]> possibleGames = new List<object[]>(); // {move, score}
 
@@ -214,6 +214,8 @@ namespace Game_Project
             List<int> plr1SellingIndexes;
 
             public bool playing = true;
+
+            public bool aiTurn = false;
             #endregion
 
             public Game()
@@ -288,6 +290,7 @@ namespace Game_Project
                 // Called only by the player's button press to add a card form the deck to the table
                 Add();
                 gameUI.Draw();
+                currentGame.aiTurn = true;
                 AITurn();
             }
 
@@ -332,6 +335,7 @@ namespace Game_Project
                 FillShop();
                 gameUI.Draw();
                 // Only player's button press will ever call this
+                currentGame.aiTurn = true;
                 AITurn();
             }
 
@@ -371,6 +375,7 @@ namespace Game_Project
                 }
 
                 // Only a player's button press should ever trigger this function
+                currentGame.aiTurn = true;
                 AITurn();
             }
 
@@ -815,24 +820,33 @@ namespace Game_Project
         {
             if (currentGame.playing)
             {
-                // Call the function to make the AI evaluate it's choices and choose the "optimal" move
-                AI mainAI = new AI();
-                object[] decision = mainAI.Run();
-                if (decision.Length == 1 && decision[0] == "Add Card")
+                if (currentGame.aiTurn)
                 {
-                    currentGame.PlayAdd();
-                }
-                else if (decision[0] == "Buy Card")
-                {
-                    currentGame.PlayBuy((int)decision[1]);
-                }
-                else if (decision[0] == "Sell Cards")
-                {
-                    currentGame.PlaySell((int[])decision[1]);
+                    currentGame.aiTurn = false;
+                    // Call the function to make the AI evaluate it's choices and choose the "optimal" move
+                    Console.WriteLine($"I am about to run the ai @ {DateTime.Now.Second}");
+                    AI mainAI = new AI();
+                    object[] decision = mainAI.Run();
+                    if (decision.Length == 1 && decision[0] == "Add Card")
+                    {
+                        currentGame.PlayAdd();
+                    }
+                    else if (decision[0] == "Buy Card")
+                    {
+                        currentGame.PlayBuy((int)decision[1]);
+                    }
+                    else if (decision[0] == "Sell Cards")
+                    {
+                        currentGame.PlaySell((int[])decision[1]);
+                    }
+                    else
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
                 }
                 else
                 {
-                    throw new ArgumentOutOfRangeException();
+                    Console.WriteLine("It tried to cheat again");
                 }
             }
         }
