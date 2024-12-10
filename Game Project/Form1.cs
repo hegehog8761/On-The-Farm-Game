@@ -1075,7 +1075,7 @@ namespace Game_Project
 
         public static void MainMenu()
         {
-            // Check if user has 'Lucida Handwriting' font installed on their system already
+            // Check if user has 'Lucida Handwriting' font installed on their system already if not prompt them to install it, continue without or exit the game
 
             Font testFont = new Font("Lucida Handwriting", (float)58);
 
