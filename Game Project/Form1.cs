@@ -610,7 +610,7 @@ namespace Game_Project
                 gameTableList.BorderStyle = BorderStyle.FixedSingle;
                 gameTableList.BackColor = Color.White;
                 gameTableList.AutoScroll = true;
-
+                gameTableList.Padding = new Padding(0, 0, 10, 0); // Pad to prevent horizontal scrollbar from forming
 
                 // Save Game Button
                 gameSaveGame = new Button();
