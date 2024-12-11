@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Game_Project
@@ -19,8 +20,9 @@ namespace Game_Project
 
         public class AI
         {
-            public object[] Run() // Returns {"decision", cardI}
+             public static object[] Run() // Returns {"decision", cardI}
             {
+
                 List<object[]> possibleGames = new List<object[]>(); // {move, score}
 
                 // Add a card to the deck
@@ -211,6 +213,7 @@ namespace Game_Project
             List<int> plr1SellingIndexes;
 
             public bool playing = true;
+
             #endregion
 
             public Game()
@@ -284,15 +287,15 @@ namespace Game_Project
             {
                 // Called only by the player's button press to add a card form the deck to the table
                 Add();
-                gameUI.Draw();
+                gameUI.ReDraw();
                 AITurn();
             }
 
-            public void PlayAdd() 
+            public void PlayAdd()
             {
                 // Called only by the AI's desision to add a card from the deck to the table
                 Add();
-                gameUI.Draw();
+                gameUI.ReDraw();
                 PlayerTurn();
             }
 
@@ -327,7 +330,7 @@ namespace Game_Project
                 currentGame.plr1Cards.Add(currentGame.table[cardIndex]);
                 currentGame.table.RemoveAt(cardIndex);
                 FillShop();
-                gameUI.Draw();
+                gameUI.ReDraw();
                 // Only player's button press will ever call this
                 AITurn();
             }
@@ -430,7 +433,7 @@ namespace Game_Project
                 // Only ever called by player's button press
                 #region Change UI to allow user to select card to buy
 
-                gameUI.Draw(); // Clear the screen to return it to the natural state
+                gameUI.ReDraw(); // Clear the screen to return it to the natural state
 
                 // Add the back button
                 Button playBuyBack = new Button();
@@ -438,6 +441,7 @@ namespace Game_Project
                 playBuyBack.Location = new Point(238, 119);
                 playBuyBack.Size = new Size(75, 23);
                 playBuyBack.Click += PlayerTurn;
+                playBuyBack.Font = new Font("Lucida Handwriting", (float)8);
 
                 form.Controls.Add(playBuyBack);
 
@@ -465,12 +469,12 @@ namespace Game_Project
             public void PlayBuy(int cardI)
             {
                 // Assume that since it's the AI it shouln't have chosen a card it doens't have enough money for
-                Card purchasedCard = deck[cardI];
-                deck.RemoveAt(cardI);
+                Card purchasedCard = table[cardI];
+                table.RemoveAt(cardI);
                 FillShop();
                 plr2Score -= purchasedCard.score;
                 plr2Cards.Add(purchasedCard);
-                gameUI.Draw();
+                gameUI.ReDraw();
                 // Only the AI should ever run this function overflow
                 PlayerTurn();
             }
@@ -485,7 +489,7 @@ namespace Game_Project
                     plr2Cards.RemoveAt(cardI - offset);
                     offset++;
                 }
-                gameUI.Draw();
+                gameUI.ReDraw();
                 // Only the AI should ever call this overflow
                 PlayerTurn();
             }
@@ -493,19 +497,21 @@ namespace Game_Project
             public void PlaySell(object sender, EventArgs e)
             {
                 // Change UI to have back button and (confirm) sell button
-                gameUI.Draw();
+                gameUI.ReDraw();
 
                 Button playSellBack = new Button();
                 playSellBack.Text = "Back";
                 playSellBack.Location = new Point(238, 119);
                 playSellBack.Size = new Size(75, 23);
                 playSellBack.Click += PlayerTurn;
+                playSellBack.Font = new Font("Lucida Handwriting", (float)8);
 
                 Button playSellConfirm = new Button();
                 playSellConfirm.Text = "Sell";
                 playSellConfirm.Location = new Point(238, 147);
                 playSellConfirm.Size = new Size(75, 23);
                 playSellConfirm.Click += SellHandler;
+                playSellConfirm.Font = new Font("Lucida Handwriting", (float)8);
 
                 form.Controls.Add(playSellBack);
                 form.Controls.Add(playSellConfirm);
@@ -558,11 +564,11 @@ namespace Game_Project
 
                 // Player Money
                 gamePlayerMoney = new Label();
-                gamePlayerMoney.AutoSize = true;
+                gamePlayerMoney.AutoSize = false;
                 gamePlayerMoney.Font = labelFont;
-                gamePlayerMoney.Text = "Money: £";
+                gamePlayerMoney.Text = "Money: £0";
                 gamePlayerMoney.Location = new Point(12, 73);
-                gamePlayerMoney.Size = new Size(82, 16);
+                gamePlayerMoney.Size = new Size(100, 24); // Makes it large enough to also have space to parent the money adding animation when needed to
 
                 // Player cards label
                 gamePlayerCardsLabel = new Label();
@@ -609,7 +615,7 @@ namespace Game_Project
                 gameTableList.BorderStyle = BorderStyle.FixedSingle;
                 gameTableList.BackColor = Color.White;
                 gameTableList.AutoScroll = true;
-
+                gameTableList.Padding = new Padding(0, 0, 10, 0); // Pad to prevent horizontal scrollbar from forming
 
                 // Save Game Button
                 gameSaveGame = new Button();
@@ -645,7 +651,7 @@ namespace Game_Project
                 deckLeftLabel.Text = $"Cards left: {currentGame.deck.Count}";
             }
 
-            public void Draw()
+            public void ReDraw()
             {
                 // Function to draw all of the main UI elements to the main form
                 form.Controls.Clear();
@@ -669,6 +675,9 @@ namespace Game_Project
             public void Update()
             {
                 // Function to update the UI when something like cards or money updates
+
+                // Update player's money
+
                 gamePlayerMoney.Text = $"Money: £{currentGame.plr1Score}";
 
                 gamePlayerCards.Controls.Clear();
@@ -763,8 +772,7 @@ namespace Game_Project
             if (currentGame.playing)
             {
                 // Call the function to make the AI evaluate it's choices and choose the "optimal" move
-                AI mainAI = new AI();
-                object[] decision = mainAI.Run();
+                object[] decision = AI.Run();
                 if (decision.Length == 1 && decision[0] == "Add Card")
                 {
                     currentGame.PlayAdd();
@@ -785,7 +793,7 @@ namespace Game_Project
         }
 
         public Form1()
-        {
+        { 
             InitializeComponent();
         }
 
@@ -1025,6 +1033,26 @@ namespace Game_Project
 
         public static void MainMenu()
         {
+            // Check if user has 'Lucida Handwriting' font installed on their system already if not prompt them to install it, continue without or exit the game
+
+            Font testFont = new Font("Lucida Handwriting", (float)58);
+
+            if (testFont.FontFamily.ToString() != "[FontFamily: Name=Lucida Handwriting]")
+            {
+                DialogResult fontResponse = MessageBox.Show("It appears that the font usually used by this game is not installed on your system. \n\nInstall (Yes), Continue without (No) or Exit (Cancel)?", "Font not found", MessageBoxButtons.YesNoCancel);
+
+                if (fontResponse == DialogResult.Yes)
+                {
+                    Process.Start("https://github.com/hegehog8761/On-The-Farm-Game/raw/refs/heads/master/Game%20Project/lucidahandwriting.ttf");
+                    Process.Start("https://raw.githubusercontent.com/hegehog8761/On-The-Farm-Game/refs/heads/master/Game%20Project/how_to_install_font.txt");
+
+                    Application.Exit();
+                } else if (fontResponse == DialogResult.Cancel)
+                {
+                    Application.Exit();
+                }
+            }
+
             // Load up the load / new game main menu
             form.Controls.Clear(); // Ensure the screen is blank before drawing to it
 
@@ -1069,7 +1097,7 @@ namespace Game_Project
         {
             if (currentGame.playing)
             {
-                gameUI.Draw();
+                gameUI.ReDraw();
                 #region Option Buttons
 
                 // Update the player's UI to add buttons to allow them to make thir desicion on what move they wish to play
@@ -1114,7 +1142,7 @@ namespace Game_Project
         {
             // Update the UI on start of game
             gameUI = new GameUI();
-            gameUI.Draw();
+            gameUI.ReDraw();
 
             PlayerTurn();
         }
