@@ -677,57 +677,13 @@ namespace Game_Project
                 Update();
             }
 
-            static void UpdateMoneyTicker(Label label)
-            {
-                // Update the money adding animation
-                if (label.Location != new Point(45, 0)) // Not reached end point
-                {
-                    Task.Delay(1).Wait();
-                    label.Location = new Point(45, label.Location.Y - 1);
-
-                    UpdateMoneyTicker(label);
-                }
-            }
-
-            public void Update(bool animate = true)
+            public void Update()
             {
                 // Function to update the UI when something like cards or money updates
 
-                // Animate money updating
+                // Update player's money
 
-                if (animate)
-                {
-                    int lastScore = int.Parse(gamePlayerMoney.Text.Split('£')[1]);
-
-                    gamePlayerMoney.Text = $"Money: £{currentGame.plr1Score}";
-
-                    int diff = currentGame.plr1Score - lastScore;
-
-                    if (diff != 0)
-                    {
-                        Label changeAnim = new Label();
-                        string symbol = diff < 0 ? "-" : "+";
-                        changeAnim.Text = $"{symbol}£{Math.Abs(diff)}";
-                        changeAnim.ForeColor = diff < 0 ? Color.Red : Color.Green;
-                        changeAnim.BackColor = Color.Transparent;
-                        changeAnim.Font = new Font("Lucida Handwriting", (float)7);
-                        changeAnim.Location = new Point(45, 13);
-                        changeAnim.Size = new Size(50, 17);
-
-                        form.Controls.Add(changeAnim);
-                        changeAnim.Parent = gameUI.gamePlayerMoney;
-
-                        changeAnim.BringToFront();
-                        changeAnim.Update();
-                        UpdateMoneyTicker(changeAnim);
-
-                        changeAnim.Parent = null;
-                    }
-                }
-                else
-                {
-                    gamePlayerMoney.Text = $"Money: £{currentGame.plr1Score}";
-                }
+                gamePlayerMoney.Text = $"Money: £{currentGame.plr1Score}";
 
                 gamePlayerCards.Controls.Clear();
                 for (int i = 0; i < currentGame.plr1Cards.Count; i++)
