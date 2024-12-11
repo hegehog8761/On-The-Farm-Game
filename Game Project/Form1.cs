@@ -20,9 +20,8 @@ namespace Game_Project
 
         public class AI
         {
-            public object[] Run() // Returns {"decision", cardI}
+             public static object[] Run() // Returns {"decision", cardI}
             {
-                Console.WriteLine($"AI RAN @ {DateTime.Now.Second}");
 
                 List<object[]> possibleGames = new List<object[]>(); // {move, score}
 
@@ -215,7 +214,6 @@ namespace Game_Project
 
             public bool playing = true;
 
-            public bool aiTurn = false;
             #endregion
 
             public Game()
@@ -289,8 +287,7 @@ namespace Game_Project
             {
                 // Called only by the player's button press to add a card form the deck to the table
                 Add();
-                gameUI.Draw();
-                currentGame.aiTurn = true;
+                gameUI.ReDraw();
                 AITurn();
             }
 
@@ -298,7 +295,7 @@ namespace Game_Project
             {
                 // Called only by the AI's desision to add a card from the deck to the table
                 Add();
-                gameUI.Draw();
+                gameUI.ReDraw();
                 PlayerTurn();
             }
 
@@ -333,9 +330,8 @@ namespace Game_Project
                 currentGame.plr1Cards.Add(currentGame.table[cardIndex]);
                 currentGame.table.RemoveAt(cardIndex);
                 FillShop();
-                gameUI.Draw();
+                gameUI.ReDraw();
                 // Only player's button press will ever call this
-                currentGame.aiTurn = true;
                 AITurn();
             }
 
@@ -375,7 +371,6 @@ namespace Game_Project
                 }
 
                 // Only a player's button press should ever trigger this function
-                currentGame.aiTurn = true;
                 AITurn();
             }
 
@@ -438,7 +433,7 @@ namespace Game_Project
                 // Only ever called by player's button press
                 #region Change UI to allow user to select card to buy
 
-                gameUI.Draw(); // Clear the screen to return it to the natural state
+                gameUI.ReDraw(); // Clear the screen to return it to the natural state
 
                 // Add the back button
                 Button playBuyBack = new Button();
@@ -474,12 +469,12 @@ namespace Game_Project
             public void PlayBuy(int cardI)
             {
                 // Assume that since it's the AI it shouln't have chosen a card it doens't have enough money for
-                Card purchasedCard = deck[cardI];
-                deck.RemoveAt(cardI);
+                Card purchasedCard = table[cardI];
+                table.RemoveAt(cardI);
                 FillShop();
                 plr2Score -= purchasedCard.score;
                 plr2Cards.Add(purchasedCard);
-                gameUI.Draw();
+                gameUI.ReDraw();
                 // Only the AI should ever run this function overflow
                 PlayerTurn();
             }
@@ -494,7 +489,7 @@ namespace Game_Project
                     plr2Cards.RemoveAt(cardI - offset);
                     offset++;
                 }
-                gameUI.Draw();
+                gameUI.ReDraw();
                 // Only the AI should ever call this overflow
                 PlayerTurn();
             }
@@ -502,7 +497,7 @@ namespace Game_Project
             public void PlaySell(object sender, EventArgs e)
             {
                 // Change UI to have back button and (confirm) sell button
-                gameUI.Draw();
+                gameUI.ReDraw();
 
                 Button playSellBack = new Button();
                 playSellBack.Text = "Back";
@@ -656,7 +651,7 @@ namespace Game_Project
                 deckLeftLabel.Text = $"Cards left: {currentGame.deck.Count}";
             }
 
-            public void Draw()
+            public void ReDraw()
             {
                 // Function to draw all of the main UI elements to the main form
                 form.Controls.Clear();
@@ -776,33 +771,23 @@ namespace Game_Project
         {
             if (currentGame.playing)
             {
-                if (currentGame.aiTurn)
+                // Call the function to make the AI evaluate it's choices and choose the "optimal" move
+                object[] decision = AI.Run();
+                if (decision.Length == 1 && decision[0] == "Add Card")
                 {
-                    currentGame.aiTurn = false;
-                    // Call the function to make the AI evaluate it's choices and choose the "optimal" move
-                    Console.WriteLine($"I am about to run the ai @ {DateTime.Now.Second}");
-                    AI mainAI = new AI();
-                    object[] decision = mainAI.Run();
-                    if (decision.Length == 1 && decision[0] == "Add Card")
-                    {
-                        currentGame.PlayAdd();
-                    }
-                    else if (decision[0] == "Buy Card")
-                    {
-                        currentGame.PlayBuy((int)decision[1]);
-                    }
-                    else if (decision[0] == "Sell Cards")
-                    {
-                        currentGame.PlaySell((int[])decision[1]);
-                    }
-                    else
-                    {
-                        throw new ArgumentOutOfRangeException();
-                    }
+                    currentGame.PlayAdd();
+                }
+                else if (decision[0] == "Buy Card")
+                {
+                    currentGame.PlayBuy((int)decision[1]);
+                }
+                else if (decision[0] == "Sell Cards")
+                {
+                    currentGame.PlaySell((int[])decision[1]);
                 }
                 else
                 {
-                    Console.WriteLine("It tried to cheat again");
+                    throw new ArgumentOutOfRangeException();
                 }
             }
         }
@@ -1112,7 +1097,7 @@ namespace Game_Project
         {
             if (currentGame.playing)
             {
-                gameUI.Draw();
+                gameUI.ReDraw();
                 #region Option Buttons
 
                 // Update the player's UI to add buttons to allow them to make thir desicion on what move they wish to play
@@ -1157,7 +1142,7 @@ namespace Game_Project
         {
             // Update the UI on start of game
             gameUI = new GameUI();
-            gameUI.Draw();
+            gameUI.ReDraw();
 
             PlayerTurn();
         }
